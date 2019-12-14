@@ -3,6 +3,7 @@ import useStyles from '../../Style';
 import Button from '@material-ui/core/Button';
 import StandardTextField from '../../Components/TextField';
 import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CategoriesList from '../../Components/ListItem/CategoriesList';
 import Snackbars from '../../Components/SnackBar';
 
@@ -17,9 +18,22 @@ function Settings (props) {
     const [incomeCategoriesChecked, setIncomeCategoriesChecked] = useState([]);
     const [expenseCategoriesChecked, setExpenseCategoriesChecked] = useState([]);
 
+    const dispatch = useDispatch();
+    const onIncomeCategoryAdd = (IncomeCategory) => dispatch(actions.onIncomeCategoryAdd(IncomeCategory));
+    const onExpenseCategoryAdd = (ExpenseCategory) => dispatch(actions.onExpenseCategoryAdd(ExpenseCategory));
+    const onCategoryRemove = (keys, categoryType) => dispatch(actions.onCategoryRemove(keys, categoryType));
+    const onSendCategoriesRequest = () => dispatch(actions.onSendCategoriesRequest());
+    const onInfoELementClose = (event, reason) => dispatch(actions.onInfoELementClose(event, reason));
+
+    const incomeCategories = useSelector(state => { return state.settings.incomeCategories });
+    const expenseCategories = useSelector(state => { return state.settings.expenseCategories });
+    const infoElementOpen = useSelector(state => { return state.settings.infoElementOpen });
+    const infoElementText = useSelector(state => { return state.settings.infoElementText });
+    const infoElementVariant = useSelector(state => { return state.settings.infoElementVariant });
+
     useEffect(() => {
-        if(props.incomeCategories.length === 0){
-            props.onSendCategoriesRequest();
+        if(incomeCategories.length === 0){
+            onSendCategoriesRequest();
         }
     }, []);
 
@@ -27,21 +41,21 @@ function Settings (props) {
         setIncomeCategoryAdd(event.target.value)
     }
     const incomeClickHandler = () => {
-        props.onIncomeCategoryAdd(incomeCategoryAdd);
+        onIncomeCategoryAdd(incomeCategoryAdd);
     }
 
     const expenseInputChangeHandler = (event) => {
         setExpenseCategoryAdd(event.target.value)
     }
     const expenseClickHandler = () => {
-        props.onExpenseCategoryAdd(expenseCategoryAdd);
+        onExpenseCategoryAdd(expenseCategoryAdd);
     }
 
     const incomeCategoriesRemoveClickHandler = () => {
-        props.onCategoryRemove(incomeCategoriesChecked, 'income');
+        onCategoryRemove(incomeCategoriesChecked, 'income');
     }
     const expenseCategoriesRemoveClickHandler = () => {
-        props.onCategoryRemove(expenseCategoriesChecked, 'expense');
+        onCategoryRemove(expenseCategoriesChecked, 'expense');
     }
 
     const incomeHandleToggle = value => () => {
@@ -70,9 +84,9 @@ function Settings (props) {
         setExpenseCategoriesChecked(newChecked);
     };
 
-      let incomeCategories = 'Brak zdefiniowanych kategorii wpływów.'
-      if (props.incomeCategories.length !== 0) {
-        const categories = props.incomeCategories.map(category => {
+      let incomeCategoriesList = 'Brak zdefiniowanych kategorii wpływów.'
+      if (incomeCategories.length !== 0) {
+        const categories = incomeCategories.map(category => {
             return (
                 {
                     key: category.key,
@@ -81,7 +95,7 @@ function Settings (props) {
             );
         });
 
-        incomeCategories = (
+        incomeCategoriesList = (
             <CategoriesList 
                 onClick={incomeHandleToggle}
                 list={categories}
@@ -92,9 +106,9 @@ function Settings (props) {
         )
       };
 
-      let expenseCategories = 'Brak zdefiniowanych kategorii wydatków.'
-      if (props.expenseCategories.length !== 0) {
-        const categories = props.expenseCategories.map(category => {
+      let expenseCategoriesList = 'Brak zdefiniowanych kategorii wydatków.'
+      if (expenseCategories.length !== 0) {
+        const categories = expenseCategories.map(category => {
             return (
                 {
                     key: category.key,
@@ -103,7 +117,7 @@ function Settings (props) {
             );
         });
 
-        expenseCategories = (
+        expenseCategoriesList = (
             <CategoriesList 
                 onClick={expenseHandleToggle}
                 list={categories}
@@ -150,32 +164,12 @@ function Settings (props) {
                         >Wyślij</Button>
                     </div>
                 </div>
-                <div style={{maxWidth: '300px'}}>{incomeCategories}</div>
-                <div style={{maxWidth: '300px'}}>{expenseCategories}</div>
+                <div style={{maxWidth: '300px'}}>{incomeCategoriesList}</div>
+                <div style={{maxWidth: '300px'}}>{expenseCategoriesList}</div>
             </div>
-            <Snackbars open={props.infoElementOpen} variant={props.infoElementVariant} message={props.infoElementText} onClose={props.onInfoELementClose}/>
+            <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose}/>
       </React.Fragment>
     )
 }
 
-const mapStateToProps = state => {
-    return {
-        incomeCategories: state.settings.incomeCategories,
-        expenseCategories: state.settings.expenseCategories,
-        infoElementOpen: state.settings.infoElementOpen,
-        infoElementText: state.settings.infoElementText,
-        infoElementVariant:state.settings.infoElementVariant
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onIncomeCategoryAdd: (IncomeCategory) => dispatch(actions.onIncomeCategoryAdd(IncomeCategory)),
-        onExpenseCategoryAdd: (ExpenseCategory) => dispatch(actions.onExpenseCategoryAdd(ExpenseCategory)),
-        onCategoryRemove: (keys, categoryType) => dispatch(actions.onCategoryRemove(keys, categoryType)),
-        onSendCategoriesRequest: () => dispatch(actions.onSendCategoriesRequest()),
-        onInfoELementClose: (event, reason) => dispatch(actions.onInfoELementClose(event, reason))
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default Settings;

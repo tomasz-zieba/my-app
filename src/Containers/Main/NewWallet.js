@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import axios from '../../axios-wallets';
-import { connect } from 'react-redux';
-
-import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
+import { useDispatch, useSelector } from 'react-redux';
 import useStyles from '../../Style';
 import * as actions from '../../store/actions/index';
 import DatePicker from '../../Components/DatePicker';
@@ -17,6 +14,15 @@ function WelcomPage (props) {
     const [startDate, setStartDate] = React.useState(new Date());
     const [endDate, setEndDate] = React.useState(new Date());
     const classes = useStyles();
+
+
+    const dispatch = useDispatch();
+    const onInfoELementClose = (event, reason) => dispatch(actions.onInfoELementClose(event, reason));
+    const onFetchNewWallet = (walletData) => dispatch(actions.onFetchNewWallet(walletData));
+
+    const infoElementOpen = useSelector(state => { return state.settings.infoElementOpen });
+    const infoElementText = useSelector(state => { return state.settings.infoElementText });
+    const infoElementVariant = useSelector(state => { return state.settings.infoElementVariant });
     
     const handleStartDateChange = date => {
       setStartDate(date);
@@ -36,7 +42,7 @@ function WelcomPage (props) {
         startDate: startDateWithFormat,
         endDate: endDateWithFormat
       }
-      props.onFetchNewWallet(walletData);
+      onFetchNewWallet(walletData);
     }
 
     return (
@@ -46,34 +52,17 @@ function WelcomPage (props) {
             <DatePicker label={'Do:'} date={endDate} onDateChange={handleEndDateChange}/>
             <div style={{display: 'flex', justifyContent: 'space-around'}}>
               <Button 
-                disabled={props.infoElementOpen} 
+                disabled={infoElementOpen} 
                 style={{width: '251px', marginTop: '30px'}} 
                 onClick={sendAction} variant="contained" 
                 size="large" 
-                color="primary" 
+                color="primary"
                 className={classes.margin}
                 >Stwórz portfel</Button>
             </div>
-              <Snackbars open={props.infoElementOpen} variant={props.infoElementVariant} message={props.infoElementText} onClose={props.onInfoELementClose}/>
+              <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose}/>
       </React.Fragment>
     )
 }
 
-
-const mapStateToProps = state => {
-  return {
-    infoElementOpen: state.settings.infoElementOpen,
-    infoElementText: state.settings.infoElementText,
-    infoElementVariant:state.settings.infoElementVariant
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-      onInfoELementOpen: () => dispatch(actions.onInfoELementOpen()),
-      onInfoELementClose: (event, reason) => dispatch(actions.onInfoELementClose(event, reason)),
-      onFetchNewWallet: (walletData) => dispatch(actions.onFetchNewWallet(walletData))
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(WelcomPage, axios);
+export default WelcomPage;

@@ -1,27 +1,30 @@
 import React, {useEffect} from 'react';
-import useStyles from '../../Style';
 import { withRouter } from "react-router";
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions/index';
 import LatestOperations from '../../Components/LatestOperations/LatestOperations';
 
 
 function AllOperations (props) {
 
+    const dispatch = useDispatch();
+    const onSendWalletRequest = (walletId) => dispatch(actions.onSendWalletRequest(walletId));
+
+    const incomes = useSelector(state => { return state.wallet.incomes });
+    const expenses = useSelector(state => { return state.wallet.expenses });
+
     useEffect(() => {
-        if (props.incomes.length === 0 || props.expenses.length === 0){
-            props.onSendWalletRequest(props.match.params.id)
+        if (incomes.length === 0 || expenses.length === 0){
+            onSendWalletRequest(props.match.params.id)
         }
     }, []);
 
-    const classes = useStyles();
-
     let operations, label;
     if(props.location.hash === '#expenses'){
-        operations = props.expenses;
+        operations = expenses;
         label = 'Wypłaty';
     } else if (props.location.hash === '#incomes') {
-        operations = props.incomes;
+        operations = incomes;
         label = 'Wpłaty do portfela';
     };
 
@@ -32,18 +35,4 @@ function AllOperations (props) {
     )
 }
 
-const mapStateToProps = state => {
-    return {
-        incomes: state.wallet.incomes,
-        expenses: state.wallet.expenses
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onSendWalletRequest: (walletId) => dispatch(actions.onSendWalletRequest(walletId)),
-    };
-};
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AllOperations));
+export default withRouter(AllOperations);

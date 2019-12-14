@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import axios from '../../axios-wallets';
+import { useDispatch, useSelector } from 'react-redux';
 import useStyles from '../../Style';
 import Loader from '../../Components/Loader';
 import Card from '../../Components/Card'
@@ -14,6 +13,19 @@ function Favourites (props) {
     const classes = useStyles();
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
     const [walletRemoveKey, setWalletRemoveKey] = useState('');
+
+    const dispatch = useDispatch();
+    const onSendWalletsRequest = () => dispatch(actions.onSendWalletsRequest());
+    const onWalletRemove = (walletId) => dispatch(actions.onWalletRemove(walletId));
+    const onInfoELementClose = () => dispatch(actions.onInfoELementClose());
+    const onInfoDialogClosed = () => dispatch(actions.onInfoDialogClosed());
+    const onRemoveFromFavourites = (walledId) => dispatch(actions.onRemoveFromFavourites(walledId));
+
+    const myWallets = useSelector(state => { return state.myWallets.myWallets });
+    const infoElementOpen = useSelector(state => { return state.settings.infoElementOpen });
+    const infoElementText = useSelector(state => { return state.settings.infoElementText });
+    const infoElementVariant = useSelector(state => { return state.settings.infoElementVariant });
+    const infoDialogOpen = useSelector(state => { return state.settings.infoDialogOpen });
 
     const errorInfo = {
         label: 'Ups! Coś poszło nie tak.',
@@ -34,16 +46,16 @@ function Favourites (props) {
     }
 
     useEffect(() => {
-        props.onSendWalletsRequest();
+        onSendWalletsRequest();
     }, []);
 
-    const onWalletRemove = (key) => {
+    const removeHandler = (key) => {
         setWalletRemoveKey(key);
         setConfirmationDialogOpen(true);
     }
 
     const confirmationDialogConfirm = (key) => {
-        props.onWalletRemove(walletRemoveKey)
+        onWalletRemove(walletRemoveKey)
         setWalletRemoveKey('');
         setConfirmationDialogOpen(false);
     }
@@ -54,7 +66,7 @@ function Favourites (props) {
     }
 
     const InfoELementClose = () => {
-        props.onInfoDialogClosed();
+        onInfoDialogClosed();
         props.history.push('/');
     }
 
@@ -62,15 +74,11 @@ function Favourites (props) {
         props.history.push({pathname:'/wallet/' + walletKey, title: walletName});
     }
 
-    const removeFromFavourites = (key) => {
-        props.onRemoveFromFavourites(key);
-    }
-
     let MyWalletsList;
-    if(props.myWallets === undefined) {
+    if(myWallets === undefined) {
         MyWalletsList = <Loader />
     } else {
-        const favouritesWalletsList = props.myWallets.filter(wallet => wallet.favourites !== undefined)
+        const favouritesWalletsList = myWallets.filter(wallet => wallet.favourites !== undefined)
 
         if(favouritesWalletsList.length === 0) {
             MyWalletsList = <div className={classes.info}>Lista ulubionych jest pusta<span className={classes.infoSpan}></span></div>
@@ -79,8 +87,8 @@ function Favourites (props) {
                 return (
                     <Card 
                         open={() => onWalletOpen(item.key, item.walletName)} 
-                        onRemove={() => onWalletRemove(item.key)} 
-                        favouritesToggle = {() => removeFromFavourites(item.key)}
+                        onRemove={() => removeHandler(item.key)} 
+                        favouritesToggle = {() => onRemoveFromFavourites(item.key)}
                         favouritesButtonText = {'Usuń z ulubionych'}
                         favouritesIcon={<StarIcon />}
                         key={item.key} 
@@ -98,33 +106,11 @@ function Favourites (props) {
             <div style={{display: 'flex', flexWrap: 'wrap'}}>
                 {MyWalletsList}
             </div>
-            <InfoDialog open={props.infoDialogOpen} text={errorInfo} handleClose={InfoELementClose}/>
+            <InfoDialog open={infoDialogOpen} text={errorInfo} handleClose={InfoELementClose}/>
             <InfoDialog open={confirmationDialogOpen} text={confirmationInfo} handleClose={confirmationDialogConfirm} handleCancel={confirmationDialogCancel}/>
-            <Snackbars open={props.infoElementOpen} variant={props.infoElementVariant} message={props.infoElementText} onClose={props.onInfoELementClose}/>
+            <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose}/>
       </React.Fragment>
     )
 }
 
-const mapStateToProps = state => {
-    return {
-        myWallets: state.myWallets.myWallets,
-        infoElementOpen: state.settings.infoElementOpen,
-        infoElementText: state.settings.infoElementText,
-        infoElementVariant: state.settings.infoElementVariant,
-        infoDialogOpen: state.settings.infoDialogOpen
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onSendWalletsRequest: () => dispatch(actions.onSendWalletsRequest()),
-        onWalletRemove: (walletId) => dispatch(actions.onWalletRemove(walletId)),
-        onInfoELementClose: () => dispatch(actions.onInfoELementClose()),
-        onInfoDialogClosed: () => dispatch(actions.onInfoDialogClosed()),
-        onAddToFavourites: (walledId) => dispatch(actions.onAddToFavourites(walledId)),
-        onRemoveFromFavourites: (walledId) => dispatch(actions.onRemoveFromFavourites(walledId)),
-        onInfoDialogOpen: () => dispatch(actions.onInfoDialogOpen())
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Favourites, axios);
+export default Favourites;
