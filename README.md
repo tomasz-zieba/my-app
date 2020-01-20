@@ -1,4 +1,11 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Wallet App
+
+## How to use
+
+npm install
+npm install react-react
+npm install --save react-redux
+npm start
 
 ## Available Scripts
 
