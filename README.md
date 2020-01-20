@@ -3,10 +3,10 @@
 
 ## How to use
 
-npm install
-npm install react-react
-npm install --save react-redux
-npm start
+npm install<br>
+npm install react-react<br>
+npm install --save react-redux<br>
+npm start<br>
 
 ## Available Scripts
 
