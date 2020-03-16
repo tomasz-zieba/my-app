@@ -8,15 +8,24 @@ import thunk from 'redux-thunk';
 import myWallets from './store/reducers/myWallets';
 import wallet from './store/reducers/wallet';
 import settings from './store/reducers/settings';
+import auth from './store/reducers/auth'
 import theme from './theme';
+import { connectRouter } from 'connected-react-router'
+import { ConnectedRouter } from 'connected-react-router'
+import { createBrowserHistory } from 'history'
+import { routerMiddleware } from 'connected-react-router'
 
 import App from "./App";
 
-const rootReducer = combineReducers({
+const createRootReducer = (history) => combineReducers({
+    router: connectRouter(history),
     myWallets: myWallets,
     wallet: wallet,
-    settings: settings
-});
+    settings: settings,
+    auth: auth
+  })
+
+const history = createBrowserHistory();
 
 const logger = store => {
     return next => {
@@ -26,18 +35,31 @@ const logger = store => {
         };
     };
 };
-
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+export default function configureStore(preloadedState) {
+    const store = createStore(
+      createRootReducer(history), // root reducer with router state
+      preloadedState,
+      composeEnhancers(
+        applyMiddleware(
+          routerMiddleware(history), // for dispatching history actions
+          logger, 
+          thunk
+        ),
+      ),
+    )
+    return store
+  }
 
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(logger, thunk)));
+const store = configureStore(/* provide initial state if any */)
 
 ReactDOM.render(
     <div>
         <ThemeProvider theme={theme}>
         <Provider store={store}>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
+            <ConnectedRouter history={history}>
+                    <App />
+            </ConnectedRouter>
         </Provider>
         </ThemeProvider>
     </div>,

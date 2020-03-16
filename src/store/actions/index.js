@@ -25,3 +25,10 @@ export {
     onInfoDialogOpen,
     onInfoDialogClosed
 } from './settings';
+
+export {
+    authLogin,
+    authLogout,
+    authSignup,
+    authCheckState
+} from './auth'
