@@ -42,15 +42,43 @@ export const setWalletData = (walletData) => {
 }
 
 export const onSendWalletRequest = (walletId) => {
+    console.log(walletId);
     return (dispatch) => {
-        axios.get('/Wallets/' + walletId + '.json')
-            .then (response => {
-                dispatch(setWalletData(response.data));
-                // dispatch(setTotalExpense(response.data.expenses));
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
+        fetch('http://localhost:8080/wallet/' + walletId, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+            // body: JSON.stringify({
+            //     user: userId,
+            // })
+        })
+        .then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Deleting a post failed!');
+            }
+            return res.json();
             })
-            .catch(error => {
-            //    dispatch(onInfoELementOpen());
-            });
+        .then (resData => {
+            console.log('resData')
+            console.log(resData)
+            // dispatch(setWalletData(response.data));
+            // dispatch(setTotalExpense(response.data.expenses));
+        })
+        .catch(error => {
+        //    dispatch(onInfoELementOpen());
+        });
+
+
+        // axios.get('/Wallets/' + walletId + '.json')
+        //     .then (response => {
+        //         dispatch(setWalletData(response.data));
+        //     })
+        //     .catch(error => {
+        //     });
     }
 };
 

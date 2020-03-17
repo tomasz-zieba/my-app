@@ -12,7 +12,7 @@ const reducer = (state = initialState, action) => {
                 myWallets: action.myWallets
             }
         case actionTypes.MY_WALLETS_UPDATE :
-            const walletsUpdated = state.myWallets.filter(wallet => wallet.key !== action.walletKey )
+            const walletsUpdated = state.myWallets.filter(wallet => wallet.walletId !== action.walletId )
             return {
                 ...state,
                 myWallets: walletsUpdated
@@ -39,6 +39,8 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 myWallets: walletsFavouritesRemoveUpdated
             }
+        case actionTypes.WALLETS_CLEAR : 
+            return {}
         default :
             return state
     }

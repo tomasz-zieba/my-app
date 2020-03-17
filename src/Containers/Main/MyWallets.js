@@ -7,6 +7,7 @@ import Snackbars from '../../Components/SnackBar';
 import * as actions from '../../store/actions/index';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import StarIcon from '@material-ui/icons/Star';
+import { GiConsoleController } from 'react-icons/gi';
 
 function MyWallets (props) {
 
@@ -65,8 +66,8 @@ function MyWallets (props) {
         props.history.push('/');
     }
 
-    const onWalletOpen = (walletKey, walletName) => {
-        props.history.push({pathname:'/wallet/' + walletKey, title: walletName});
+    const onWalletOpen = (walletId, walletName) => {
+        props.history.push({pathname:'/wallet/' + walletId, title: walletName});
     }
 
     let MyWalletsList;
@@ -77,13 +78,13 @@ function MyWallets (props) {
             if (item.favourites !== undefined) {
                 return (
                     <Card 
-                        open={() => onWalletOpen(item.key, item.walletName)} 
+                        open={() => onWalletOpen(item.walletId, item.walletName)} 
                         onRemove={() => WalletRemove(item.key)} 
-                        favouritesToggle = {() => onRemoveFromFavourites(item.key)}
+                        favouritesToggle = {() => onRemoveFromFavourites(item.walletId)}
                         favouritesButtonText = {'Usuń z ulubionych'}
                         favouritesIcon={<StarIcon />}
-                        key={item.key} 
-                        walletKey={item.key} 
+                        key={item.walletId} 
+                        walletKey={item.walletId} 
                         name={item.walletName} 
                         endDate={item.endDate} 
                         startDate={item.startDate} />
@@ -91,13 +92,13 @@ function MyWallets (props) {
             } else {
                 return (
                     <Card 
-                        open={() => onWalletOpen(item.key, item.walletName)} 
-                        onRemove={() => WalletRemove(item.key)} 
-                        favouritesToggle = {() => onAddToFavourites(item.key)}
+                        open={() => onWalletOpen(item.walletId, item.walletName)} 
+                        onRemove={() => WalletRemove(item.walletId)} 
+                        favouritesToggle = {() => onAddToFavourites(item.walletId)}
                         favouritesButtonText = {'Dodaj do ulubionych'}
                         favouritesIcon={<StarBorderIcon />}
-                        key={item.key} 
-                        walletKey={item.key} 
+                        key={item.walletId} 
+                        walletKey={item.walletId} 
                         name={item.walletName} 
                         endDate={item.endDate} 
                         startDate={item.startDate} />
