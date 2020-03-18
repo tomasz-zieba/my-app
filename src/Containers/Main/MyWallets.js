@@ -7,7 +7,6 @@ import Snackbars from '../../Components/SnackBar';
 import * as actions from '../../store/actions/index';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import StarIcon from '@material-ui/icons/Star';
-import { GiConsoleController } from 'react-icons/gi';
 
 function MyWallets (props) {
 
@@ -75,7 +74,7 @@ function MyWallets (props) {
         MyWalletsList = <Loader />
     } else {
         MyWalletsList = myWallets.map(item => {
-            if (item.favourites !== undefined) {
+            if (item.isFavourite === true) {
                 return (
                     <Card 
                         open={() => onWalletOpen(item.walletId, item.walletName)} 

@@ -78,7 +78,7 @@ function Favourites (props) {
     if(myWallets === undefined) {
         MyWalletsList = <Loader />
     } else {
-        const favouritesWalletsList = myWallets.filter(wallet => wallet.favourites !== undefined)
+        const favouritesWalletsList = myWallets.filter(wallet => wallet.isFavourite === true)
 
         if(favouritesWalletsList.length === 0) {
             MyWalletsList = <div className={classes.info}>Lista ulubionych jest pusta<span className={classes.infoSpan}></span></div>
@@ -86,13 +86,13 @@ function Favourites (props) {
             MyWalletsList = favouritesWalletsList.map(item => {
                 return (
                     <Card 
-                        open={() => onWalletOpen(item.key, item.walletName)} 
-                        onRemove={() => removeHandler(item.key)} 
-                        favouritesToggle = {() => onRemoveFromFavourites(item.key)}
+                        open={() => onWalletOpen(item.walletId, item.walletName)} 
+                        onRemove={() => removeHandler(item.walletId)} 
+                        favouritesToggle = {() => onRemoveFromFavourites(item.walletId)}
                         favouritesButtonText = {'Usuń z ulubionych'}
                         favouritesIcon={<StarIcon />}
-                        key={item.key} 
-                        walletKey={item.key} 
+                        key={item.walletId} 
+                        walletKey={item.walletId} 
                         name={item.walletName} 
                         endDate={item.endDate} 
                         startDate={item.startDate} />

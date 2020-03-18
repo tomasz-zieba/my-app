@@ -19,8 +19,8 @@ const reducer = (state = initialState, action) => {
             }
         case actionTypes.WALLET_FAVOURITES_ADD :
             const walletsFavouritesAddUpdated = state.myWallets.map(wallet => {
-                if(wallet.key === action.walletKey){
-                    wallet.favourites = true;
+                if(wallet.walletId === action.walletId){
+                    wallet.isFavourite = true;
                 }
                 return wallet
             })
@@ -30,8 +30,8 @@ const reducer = (state = initialState, action) => {
             };
         case actionTypes.WALLET_FAVOURITES_REMOVE :
             const walletsFavouritesRemoveUpdated = state.myWallets.map(wallet => {
-                if(wallet.key === action.walletKey){
-                    delete wallet.favourites;
+                if(wallet.walletId === action.walletId){
+                    wallet.isFavourite = false;
                 }
                 return wallet
             })

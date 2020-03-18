@@ -6,7 +6,6 @@ import * as actions from '../../store/actions/index';
 import useStyles from '../../Style';
 import StandardTextField from '../../Components/TextField';
 import Button from '@material-ui/core/Button';
-import Snackbars from '../../Components/SnackBar';
 
 function Main () {
 
