@@ -17,6 +17,7 @@ function AllOperations (props) {
         if (incomes.length === 0 || expenses.length === 0){
             onSendWalletRequest(props.match.params.id)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     let operations, label;

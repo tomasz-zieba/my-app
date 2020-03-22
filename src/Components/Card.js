@@ -8,6 +8,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { withRouter } from "react-router";
+import walletImg from '../assets/wallet.jpg';
 
 const useStyles = makeStyles({
   card: {
@@ -23,16 +24,15 @@ const useStyles = makeStyles({
 
 function ImgMediaCard(props) {
   const classes = useStyles();
-
   return (
     <Card className={classes.card}>
       <CardActionArea>
         <CardMedia
           component="img"
-          alt="Contemplative Reptile"
+          alt="Wallet"
           height="140"
-          image="http://t0.gstatic.com/images?q=tbn:ANd9GcRtn8IMIQgn0-1t9FVA5ivTEIp5BFsPuUoed8jScrvFFR7hK1IEcALj9Ix7s52ESDkrqJx5RBpjQ15jNtXBl1U"
-          title="Contemplative Reptile"
+          image={walletImg}
+          title="Wallet"
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2" className={classes.cardName}>

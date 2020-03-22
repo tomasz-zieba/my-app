@@ -1,5 +1,4 @@
 import * as actionTypes from './actionTypes';
-import axios from '../../axios-wallets';
 import * as action from './index';
 
 export const fetchWalletsSuccess = (fetchedWallets) => {
@@ -18,8 +17,9 @@ export const clearWallets = () => {
 export const onSendWalletsRequest = () => {
     return (dispatch) => {
         dispatch(clearWallets());
+        dispatch(action.onRequestSended());
         const token = localStorage.getItem('token');
-        fetch('http://localhost:8080/wallets', {
+        fetch('https://virtual-wallet-tz.herokuapp.com/wallets', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -27,6 +27,7 @@ export const onSendWalletsRequest = () => {
             }
         })
         .then(res => {
+            dispatch(action.onGetResponse());
             if (res.status !== 200 && res.status !== 201) {
                 throw new Error('Deleting a post failed!');
             }
@@ -34,7 +35,7 @@ export const onSendWalletsRequest = () => {
             })
         .then(resData => {
             let fetchedWallets = [];
-            resData.wallets.forEach(function(item){
+            resData.wallets.forEach( item => {
                 const wallet = {
                     endDate: item.walletId.endDate,
                     startDate: item.walletId.startDate,
@@ -47,20 +48,6 @@ export const onSendWalletsRequest = () => {
             });
             dispatch(fetchWalletsSuccess(fetchedWallets));
         })
-        // axios.get('/VirtualWallet.json')
-        //     .then (response => {
-        //         let fetchedWallets = [];
-        //         for (var key in response.data) {
-        //             if (response.data.hasOwnProperty(key)) {
-        //                 fetchedWallets.push({...response.data[key], key: key})
-        //             }
-        //         }
-        //         console.log(fetchedWallets)
-        //         dispatch(fetchWalletsSuccess(fetchedWallets));
-        //     })
-        //     .catch(error => {
-        //        dispatch(action.onInfoDialogOpen());
-        //     });
     }
 };
 
@@ -73,22 +60,22 @@ export const myWalletsUpdate = (walletId) => {
 
 export const onWalletRemove = (walletId) => {
   return (dispatch) => {
+    dispatch(action.onRequestSended());
     const token = localStorage.getItem('token');
-    fetch('http://localhost:8080/wallet/' + walletId, {
+    fetch('https://virtual-wallet-tz.herokuapp.com/wallet/' + walletId, {
       method: 'DELETE',
       headers: {
         Authorization: 'Bearer ' + token
       }
     })
     .then(res => {
+        dispatch(action.onGetResponse());
       if (res.status !== 200 && res.status !== 201) {
         throw new Error('Deleting a wallet failed!');
       }
       return res.json();
     })
     .then(resData => {
-      console.log('success!!!!!!')
-      console.log(resData);
       dispatch(myWalletsUpdate(walletId));
       dispatch(action.onInfoELementOpen('success', 'Portfel usunięty pomyślnie.'));
     })
@@ -96,25 +83,6 @@ export const onWalletRemove = (walletId) => {
         dispatch(action.onInfoELementOpen('error', 'Błąd połączenia z serwerem. Portfel nie został usunięty.'));
         console.log(error);
     });
-    
-    // const removeFromWalletsBasicInfo = () => {
-    //     return axios.delete('/VirtualWallet/' + walletKey + '.json');
-    // }
-    // const removeFromWalletsFullInfo = () => {
-    //     return axios.delete('/Wallets/' + walletKey + '.json');
-    // }
-
-    // return (dispatch) => {
-    //     Promise.all([removeFromWalletsBasicInfo(), removeFromWalletsFullInfo()])
-    //     .then (response => {
-    //         dispatch(myWalletsUpdate(walletKey));
-    //         dispatch(action.onInfoELementOpen('success', 'Portfel usunięty pomyślnie.'));
-    //     })
-    //     .catch(error => {
-    //         dispatch(action.onInfoELementOpen('error', 'Błąd połączenia z serwerem. Portfel nie został usunięty.'));
-    //         console.log(error);
-    //     });
-    // }
   }
 }
 
@@ -127,14 +95,16 @@ export const addToFavourites = (walletId) => {
 
 export const onAddToFavourites = (walletId) => {
     return (dispatch) => {
+        dispatch(action.onRequestSended());
         const token = localStorage.getItem('token');
-        fetch('http://localhost:8080/fav-wallets-add/' + walletId, {
+        fetch('https://virtual-wallet-tz.herokuapp.com/fav-wallets-add/' + walletId, {
         method: 'GET',
         headers: {
             Authorization: 'Bearer ' + token
         }
         })
         .then(res => {
+            dispatch(action.onGetResponse());
             if (res.status !== 200 && res.status !== 201) {
                 throw new Error('Adding wallet to favourites failed!');
             }
@@ -160,14 +130,16 @@ export const removeFromFavourites = (walletId) => {
 
 export const onRemoveFromFavourites = (walletId) => {
     return (dispatch) => {
+        dispatch(action.onRequestSended());
         const token = localStorage.getItem('token');
-        fetch('http://localhost:8080/fav-wallets-remove/' + walletId, {
+        fetch('https://virtual-wallet-tz.herokuapp.com/fav-wallets-remove/' + walletId, {
         method: 'GET',
         headers: {
             Authorization: 'Bearer ' + token
         }
         })
         .then(res => {
+            dispatch(action.onGetResponse());
             if (res.status !== 200 && res.status !== 201) {
                 throw new Error('Adding wallet to favourites failed!');
             }
@@ -179,7 +151,6 @@ export const onRemoveFromFavourites = (walletId) => {
         })
         .catch(error => {
             dispatch(action.onInfoELementOpen('error', 'Błąd połączenia z serwerem. Portfel nie został usunięty do ulubionych.'));
-            console.log(error);
         });
     }
 }

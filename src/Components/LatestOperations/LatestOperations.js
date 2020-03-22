@@ -42,35 +42,36 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LatestOperations = props => {
-  const { className, ...rest } = props;
+  const { className } = props;
 
   const classes = useStyles();
   const operationsType = props.operationstype;
   let table = (<TableBody>
                 <TableRow hover>
-                <TableCell>Ładuję dane...</TableCell>
-                <TableCell>Ładuję dane...</TableCell>
-                <TableCell>Ładuję dane...</TableCell>
-                <TableCell>Ładuję dane...</TableCell>
+                  <TableCell>Ładuję dane...</TableCell>
+                  <TableCell>Ładuję dane...</TableCell>
+                  <TableCell>Ładuję dane...</TableCell>
+                  <TableCell>Ładuję dane...</TableCell>
                 </TableRow>
               </ TableBody>)
 
   if (props.operations !== null) {
-    table = props.operations.map((operation, index) => {
+    table = props.operations.map((operation) => {
                 return (
-                  <TableBody key={operation.operationKey}>
+                  <TableBody key={operation._id}>
                     <TableRow hover>
                     <TableCell>{operation.date}</TableCell>
                     <TableCell>{operation.info}</TableCell>
                     <TableCell>{operation.category}</TableCell>
-                    <TableCell>{operation.value}</TableCell>
+                    <TableCell>{operation.value.toFixed(2)}</TableCell>
                     </TableRow>
                   </ TableBody>
                 )})
   }
   return (
+    <React.Fragment>
     <Card
-      {...rest}
+    
       className={clsx(classes.root, className)}
     >
       <CardHeader
@@ -95,7 +96,7 @@ const LatestOperations = props => {
         </PerfectScrollbar>
       </CardContent>
       <Divider />
-      <CardActions className={classes.actions}>
+      <CardActions  className={classes.actions}>
       {props.buttonmore === 'true' ? <Button
           color="primary"
           size="small"
@@ -107,6 +108,7 @@ const LatestOperations = props => {
         
       </CardActions>
     </Card>
+    </React.Fragment>
   );
 };
 

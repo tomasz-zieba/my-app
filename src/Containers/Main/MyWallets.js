@@ -26,6 +26,7 @@ function MyWallets (props) {
     const infoElementText = useSelector(state => { return state.settings.infoElementText });
     const infoElementVariant = useSelector(state => { return state.settings.infoElementVariant });
     const infoDialogOpen = useSelector(state => { return state.settings.infoDialogOpen });
+    const requestSended = useSelector(state => { return state.settings.requestSended });
 
     const errorInfo = {
         label: 'Ups! Coś poszło nie tak.',
@@ -42,6 +43,7 @@ function MyWallets (props) {
 
     useEffect(() => {
         onSendWalletsRequest();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const WalletRemove = (key) => {
@@ -70,10 +72,10 @@ function MyWallets (props) {
     }
 
     let MyWalletsList;
-    if(myWallets === undefined) {
-        MyWalletsList = <Loader />
-    } else {
+    if (myWallets !== undefined) {
         MyWalletsList = myWallets.map(item => {
+            const startDate = item.startDate.split('T')[0];
+            const endDate = item.endDate.split('T')[0];
             if (item.isFavourite === true) {
                 return (
                     <Card 
@@ -85,8 +87,8 @@ function MyWallets (props) {
                         key={item.walletId} 
                         walletKey={item.walletId} 
                         name={item.walletName} 
-                        endDate={item.endDate} 
-                        startDate={item.startDate} />
+                        endDate={endDate} 
+                        startDate={startDate} />
                     );
             } else {
                 return (
@@ -99,8 +101,8 @@ function MyWallets (props) {
                         key={item.walletId} 
                         walletKey={item.walletId} 
                         name={item.walletName} 
-                        endDate={item.endDate} 
-                        startDate={item.startDate} />
+                        endDate={endDate} 
+                        startDate={startDate} />
                 );
             }
         });
@@ -111,6 +113,7 @@ function MyWallets (props) {
             <div style={{display: 'flex', flexWrap: 'wrap'}}>
                 {MyWalletsList}
             </div>
+            {requestSended ? <Loader /> : ''}
             <InfoDialog open={infoDialogOpen} text={errorInfo} handleClose={InfoELementClose}/>
             <InfoDialog open={confirmationDialogOpen} text={confirmationInfo} handleClose={confirmationDialogConfirm} handleCancel={confirmationDialogCancel}/>
             <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose}/>

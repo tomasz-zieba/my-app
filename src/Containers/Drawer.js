@@ -19,12 +19,14 @@ import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
 import SettingsIcon from '@material-ui/icons/Settings';
 import StarIcon from '@material-ui/icons/Star';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import DonutLargeIcon from '@material-ui/icons/DonutLarge';
+import LockIcon from '@material-ui/icons/Lock';
 
 import * as actions from '../store/actions/index';
 import { useDispatch, useSelector } from 'react-redux';
 
 import useStyles from '../Style';
-import { GiEntryDoor } from "react-icons/gi";
 
 export default function MiniDrawer(props) {
   const classes = useStyles();
@@ -41,20 +43,20 @@ export default function MiniDrawer(props) {
     authLinks = (
       <List>
         <NavLink to='/' exact activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-          <ListItem button key='Nowy portfel'>
-            <ListItemIcon><ExitToAppIcon /></ListItemIcon>
+          <ListItem button key='main'>
+            <ListItemIcon><DonutLargeIcon /></ListItemIcon>
             <ListItemText primary={'Strona główna'} />
           </ListItem>
         </NavLink>
         <NavLink to='/login' exact activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-          <ListItem button key='Nowy portfel'>
+          <ListItem button key='login'>
             <ListItemIcon><ExitToAppIcon /></ListItemIcon>
             <ListItemText primary={'Zaloguj się'} />
           </ListItem>
         </NavLink>
         <NavLink to='/signup' exact activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-          <ListItem button key='Nowy portfel'>
-            <ListItemIcon><ExitToAppIcon /></ListItemIcon>
+          <ListItem button key='signup'>
+            <ListItemIcon><PersonAddIcon /></ListItemIcon>
             <ListItemText primary={'Załóż konto'} />
           </ListItem>
         </NavLink>
@@ -64,8 +66,8 @@ export default function MiniDrawer(props) {
     authLinks = (
       <List>
         <NavLink to='/' exact activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-          <ListItem button key='Nowy portfel'>
-            <ListItemIcon><ExitToAppIcon /></ListItemIcon>
+          <ListItem button key='Main'>
+            <ListItemIcon><DonutLargeIcon /></ListItemIcon>
             <ListItemText primary={'Strona główna'} />
           </ListItem>
         </NavLink>
@@ -95,7 +97,7 @@ export default function MiniDrawer(props) {
         </NavLink>
         <NavLink to='#' onClick={onLogout} activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
           <ListItem button key='Nowy portfel'>
-            <ListItemIcon><ExitToAppIcon /></ListItemIcon>
+            <ListItemIcon><LockIcon /></ListItemIcon>
             <ListItemText primary={'Wyloguj się'} />
           </ListItem>
         </NavLink>

@@ -1,112 +1,174 @@
 import * as actionTypes from './actionTypes';
-import axios from '../../axios-wallets';
+import * as action from './index';
 
-
-export const addNewCategory = (categoryName, key, categoryType) => {
+export const addNewCategory = (categoryName, categoryType) => {
     if(categoryType === 'Income') {
         return {
             type: actionTypes.ADD_NEW_INCOME_CATEGORY,
-            categoryName: {name: categoryName, key: key}
+            categoryName: categoryName
         };
     } else if (categoryType === 'Expense') {
         return {
             type: actionTypes.ADD_NEW_EXPENSE_CATEGORY,
-            categoryName: {name: categoryName, key: key}
+            categoryName: categoryName
         };
     };
 };
 
 export const onIncomeCategoryAdd = (categoryName) => {
     return (dispatch) => {
-        axios.post('/Categories/incomeCategories.json', {categoryName: categoryName})
-            .then (response => {
-                dispatch(addNewCategory(categoryName, response.data.name, 'Income'));
-                dispatch(onInfoELementOpen('success', 'Kateogoria zapisana pomyślnie.'));
+        dispatch(action.onRequestSended());
+        const token = localStorage.getItem('token');
+        fetch('https://virtual-wallet-tz.herokuapp.com/add-category', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+            body: JSON.stringify({
+                categoryName: categoryName,
+                operationType: 'income'
             })
-            .catch(error => {
-                dispatch(onInfoELementOpen('error', 'Błąd połączenia. Kateogoria nie została zapisana.'));
-                console.log(error);
-            });
+        })
+        .then(res => {
+            dispatch(action.onGetResponse());
+            if (res.status === 422) {
+                throw new Error(
+                  "Category already exists."
+                );
+              }
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Adding a cateory failed!');
+            }
+            return res.json();
+            })
+        .then (resData => {
+            dispatch(addNewCategory(categoryName, 'Income'));
+            dispatch(onInfoELementOpen('success', 'Kateogoria zapisana pomyślnie.'));
+        })
+        .catch(error => {
+            dispatch(onInfoELementOpen('error', error.message));
+            console.log(error);
+        });
     };
 };
 
 export const onExpenseCategoryAdd = (categoryName) => {
     return (dispatch) => {
-        axios.post('/Categories/expenseCategories.json', {categoryName: categoryName})
-            .then (response => {
-                dispatch(addNewCategory(categoryName, response.data.name, 'Expense'));
-                dispatch(onInfoELementOpen('success', 'Kateogoria zapisana pomyślnie.'));
+        dispatch(action.onRequestSended());
+        const token = localStorage.getItem('token');
+        fetch('https://virtual-wallet-tz.herokuapp.com/add-category', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+            body: JSON.stringify({
+                categoryName: categoryName,
+                operationType: 'expense'
             })
-            .catch(error => {
-                dispatch(onInfoELementOpen('error', 'Błąd połączenia. Kateogoria nie została zapisana.'));
-                console.log(error);
-            });
+        })
+        .then(res => {
+            dispatch(action.onGetResponse());
+            if (res.status === 422) {
+                throw new Error(
+                  "Category already exists."
+                );
+            }
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Adding a cateory failed!');
+            }
+            return res.json();
+            })
+        .then (resData => {
+            dispatch(addNewCategory(categoryName, 'Expense'));
+            dispatch(onInfoELementOpen('success', 'Kateogoria zapisana pomyślnie.'));
+        })
+        .catch(error => {
+            dispatch(onInfoELementOpen('error', error.message));
+            console.log(error);
+        });
     };
 };
-export const categoriesUpdate = (categoryKeys, categoryType) => {
+export const categoriesUpdate = (categoryNamesList, categoryType) => {
     if(categoryType === 'income') {
         return {
             type: actionTypes.INCOME_CATEGORIES_UPDATE,
-            categoryKeys: categoryKeys
+            categoryNamesList: categoryNamesList
         };
     }
     if(categoryType === 'expense') {
-        console.log('test');
         return {
             type: actionTypes.EXPENSE_CATEGORIES_UPDATE,
-            categoryKeys: categoryKeys
+            categoryNamesList: categoryNamesList
         };
     }
 }
-export const onCategoryRemove = (categoryKeys, categoryType) => {
-    const categoriesRemove = categoryKeys.map(categoryKey => {
-        return axios.delete('/Categories/' + categoryType + 'Categories/' + categoryKey + '.json')
-    });
+export const onCategoryRemove = (categoryNamesList, categoryType) => {
     return (dispatch) => {
-        Promise.all(categoriesRemove)
-            .then (response => {
-                dispatch(categoriesUpdate(categoryKeys, categoryType));
-                dispatch(onInfoELementOpen('success', 'Kateogorie usunięte pomyślnie.'));
+        dispatch(action.onRequestSended());
+        const token = localStorage.getItem('token');
+        fetch('https://virtual-wallet-tz.herokuapp.com/remove-category', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+            body: JSON.stringify({
+                categoryNamesList: categoryNamesList,
+                operationType: categoryType,
             })
-            .catch(error => {
-                dispatch(onInfoELementOpen('error', 'Błąd połączenia. Kateogorie nie zostały zapisane.'));
-                console.log(error);
-            });
+        })
+        .then(res => {
+            dispatch(action.onGetResponse());
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Removing category failed!');
+            }
+            return res.json();
+            })
+        .then (resData => {
+            dispatch(categoriesUpdate(categoryNamesList, categoryType));
+                dispatch(onInfoELementOpen('success', 'Kateogorie usunięte pomyślnie.'));
+        })
+        .catch(error => {
+            dispatch(onInfoELementOpen('error', 'Błąd połączenia. Kateogorie nie zostały zapisane.'));
+            console.log(error);
+        });
     };
 };
 
-export const setCategories= (categories) => {
-    const categoriesIncome = [];
-    const categoriesExpense = [];
-
-    for (var key in categories.incomeCategories) {
-        if (categories.incomeCategories.hasOwnProperty(key)) {
-            categoriesIncome.push({ name: categories.incomeCategories[key].categoryName, key: key });
-        };
-    };
-
-    for (var key in categories.expenseCategories) {
-        if (categories.expenseCategories.hasOwnProperty(key)) {
-            categoriesExpense.push({ name: categories.expenseCategories[key].categoryName, key: key });
-        };
-    };
+export const setCategories = (incomeCategories, expensCategories) => {
     return {
         type: actionTypes.SET_CATEGORIES,
-        incomeCategories: categoriesIncome,
-        expenseCategories: categoriesExpense
+        incomeCategories: incomeCategories,
+        expenseCategories: expensCategories
     };
 };
 
 export const onSendCategoriesRequest = () => {
-
     return (dispatch) => {
-        axios.get('/Categories.json')
-            .then (response => {
-                dispatch(setCategories(response.data));
+        dispatch(action.onRequestSended());
+        const token = localStorage.getItem('token');
+        fetch('https://virtual-wallet-tz.herokuapp.com/categories', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            }
+        })
+        .then(res => {
+            dispatch(action.onGetResponse());
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Fetching categories failed!');
+            }
+            return res.json();
             })
-            .catch(error => {
-                console.log(error);
-            });
+        .then (resData => {
+            dispatch(setCategories(resData.incomeCategories, resData.expensCategories));
+        })
+        .catch(error => {
+            console.log(error);
+        });
     };
 };
 
@@ -138,5 +200,17 @@ export const onInfoELementClose = (event, reason) => {
 export const onInfoDialogClosed = () => {
     return {
         type: actionTypes.INFO_DIALOG_CLOSE
+    }
+}
+
+export const onRequestSended = () => {
+    return {
+        type: actionTypes.REQUEST_SENDED
+    }
+}
+
+export const onGetResponse = () => {
+    return {
+        type: actionTypes.GET_RESPONSE
     }
 }

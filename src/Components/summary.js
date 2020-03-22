@@ -73,7 +73,7 @@ const Summary = props => {
         data.labels.push(props.summarydata[i].title);
       }
       setGraphData(data)
-}, [props.summarydata])
+}, [props.summarydata, theme.palette.white])
 
   const options = {
     legend: {

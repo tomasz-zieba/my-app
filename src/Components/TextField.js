@@ -21,7 +21,6 @@ export default function StandardTextField(props) {
       <div style={{display: 'flex', justifyContent: 'space-around'}}>
         <TextField
           type={props.type}
-          id="standard-basic"
           className={classes.textField}
           label={props.label}
           value={props.value}

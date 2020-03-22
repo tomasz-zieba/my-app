@@ -2,10 +2,10 @@ import React, { useState, useEffect} from 'react';
 import useStyles from '../../Style';
 import Button from '@material-ui/core/Button';
 import StandardTextField from '../../Components/TextField';
-import { connect } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import CategoriesList from '../../Components/ListItem/CategoriesList';
 import Snackbars from '../../Components/SnackBar';
+import Loader from '../../Components/Loader';
 
 import * as actions from '../../store/actions/index';
 
@@ -24,23 +24,30 @@ function Settings (props) {
     const onCategoryRemove = (keys, categoryType) => dispatch(actions.onCategoryRemove(keys, categoryType));
     const onSendCategoriesRequest = () => dispatch(actions.onSendCategoriesRequest());
     const onInfoELementClose = (event, reason) => dispatch(actions.onInfoELementClose(event, reason));
+    const onInfoELementOpen = (type, message) => dispatch(actions.onInfoELementOpen(type, message));
 
     const incomeCategories = useSelector(state => { return state.settings.incomeCategories });
     const expenseCategories = useSelector(state => { return state.settings.expenseCategories });
     const infoElementOpen = useSelector(state => { return state.settings.infoElementOpen });
     const infoElementText = useSelector(state => { return state.settings.infoElementText });
     const infoElementVariant = useSelector(state => { return state.settings.infoElementVariant });
+    const requestSended = useSelector(state => { return state.settings.requestSended });
 
     useEffect(() => {
         if(incomeCategories.length === 0){
             onSendCategoriesRequest();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const incomeInputChangeHandler = (event) => {
         setIncomeCategoryAdd(event.target.value)
     }
     const incomeClickHandler = () => {
+        if(incomeCategories.includes(incomeCategoryAdd.trim())) {
+            onInfoELementOpen('error', 'This category already exists.');
+            return false;
+        }
         onIncomeCategoryAdd(incomeCategoryAdd);
     }
 
@@ -48,6 +55,10 @@ function Settings (props) {
         setExpenseCategoryAdd(event.target.value)
     }
     const expenseClickHandler = () => {
+        if(expenseCategories.includes(expenseCategoryAdd.trim())) {
+            onInfoELementOpen('error', 'This category already exists.');
+            return false;
+        }
         onExpenseCategoryAdd(expenseCategoryAdd);
     }
 
@@ -58,12 +69,12 @@ function Settings (props) {
         onCategoryRemove(expenseCategoriesChecked, 'expense');
     }
 
-    const incomeHandleToggle = value => () => {
-        const currentIndex = incomeCategoriesChecked.indexOf(value);
+    const incomeHandleToggle = categoryName => () => {
+        const currentIndex = incomeCategoriesChecked.indexOf(categoryName);
         const newChecked = [...incomeCategoriesChecked];
     
         if (currentIndex === -1) {
-          newChecked.push(value);
+          newChecked.push(categoryName);
         } else {
           newChecked.splice(currentIndex, 1);
         }
@@ -71,12 +82,12 @@ function Settings (props) {
         setIncomeCategoriesChecked(newChecked);
     };
 
-    const expenseHandleToggle = value => () => {
-        const currentIndex = expenseCategoriesChecked.indexOf(value);
+    const expenseHandleToggle = categoryName => () => {
+        const currentIndex = expenseCategoriesChecked.indexOf(categoryName);
         const newChecked = [...expenseCategoriesChecked];
     
         if (currentIndex === -1) {
-          newChecked.push(value);
+          newChecked.push(categoryName);
         } else {
           newChecked.splice(currentIndex, 1);
         }
@@ -86,11 +97,11 @@ function Settings (props) {
 
       let incomeCategoriesList = 'Brak zdefiniowanych kategorii wpływów.'
       if (incomeCategories.length !== 0) {
-        const categories = incomeCategories.map(category => {
+        const categories = incomeCategories.map(categoryName => {
             return (
                 {
-                    key: category.key,
-                    name: category.name
+                    key: categoryName + 'income',
+                    name: categoryName
                 }
             );
         });
@@ -108,11 +119,11 @@ function Settings (props) {
 
       let expenseCategoriesList = 'Brak zdefiniowanych kategorii wydatków.'
       if (expenseCategories.length !== 0) {
-        const categories = expenseCategories.map(category => {
+        const categories = expenseCategories.map(categoryName => {
             return (
                 {
-                    key: category.key,
-                    name: category.name
+                    key: categoryName + 'expense',
+                    name: categoryName
                 }
             );
         });
@@ -139,7 +150,6 @@ function Settings (props) {
                         />
                         <Button 
                         onClick={incomeClickHandler}
-                        // disabled={props.active} 
                         style={{width: '251px', marginTop: '30px'}} 
                         variant="contained" 
                         size="large" 
@@ -155,7 +165,6 @@ function Settings (props) {
                         />
                         <Button 
                         onClick={expenseClickHandler}
-                        // disabled={props.active} 
                         style={{width: '251px', marginTop: '30px'}} 
                         variant="contained" 
                         size="large" 
@@ -167,6 +176,7 @@ function Settings (props) {
                 <div style={{maxWidth: '300px'}}>{incomeCategoriesList}</div>
                 <div style={{maxWidth: '300px'}}>{expenseCategoriesList}</div>
             </div>
+            {requestSended ? <Loader /> : ''}
             <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose}/>
       </React.Fragment>
     )

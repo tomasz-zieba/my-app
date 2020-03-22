@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
-import { useDispatch} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 
 import * as actions from '../../store/actions/index';
+import Snackbars from '../../Components/SnackBar';
+import Loader from '../../Components/Loader';
 
 import useStyles from '../../Style';
 import StandardTextField from '../../Components/TextField';
@@ -17,15 +19,23 @@ function Main () {
 
     const dispatch = useDispatch();
     const onSignup = (event, authData) => dispatch(actions.authSignup(event, authData));
+    const onInfoELementClose = (event, reason) => dispatch(actions.onInfoELementClose(event, reason));
+    const onInfoELementOpen = (type, message) => dispatch(actions.onInfoELementOpen(type, message));
+
+    const infoElementOpen = useSelector(state => { return state.settings.infoElementOpen });
+    const infoElementText = useSelector(state => { return state.settings.infoElementText });
+    const infoElementVariant = useSelector(state => { return state.settings.infoElementVariant });
+    const requestSended = useSelector(state => { return state.settings.requestSended });
+
 
     const onSignupValidator = (event, authData) => {
         event.preventDefault();
         if(authData.name.length < 5) {
-            alert('Długość nazwy użytkownka powinna składać się z minimum 5 znaków.');
+            onInfoELementOpen('error', 'User name should be minimum 5 characters long.')
             return false;
         }
         if (authData.password !== authData.confirmedPassword || authData.password.length < 5) {
-            alert('Niepoprawne hasło.');
+            onInfoELementOpen('error', 'Password does not match')
             return false;
         }
         onSignup(event, authData);
@@ -56,6 +66,8 @@ function Main () {
                     >Zarejestruj się</Button>
                 </form>
             </div>
+            {requestSended ? <Loader /> : ''}
+            <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose}/>
       </React.Fragment>
     )
 };

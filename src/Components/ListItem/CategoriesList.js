@@ -16,11 +16,11 @@ function CategoriesList (props) {
         {props.list.map(value => {
         const labelId = `checkbox-list-label-${value.key}`;
         return (
-            <ListItem key={value.key} role={undefined} dense button onClick={props.onClick(value.key)}>
+            <ListItem key={value.key} role={undefined} dense button onClick={props.onClick(value.name)}>
                 <ListItemIcon>
                 <Checkbox
                     edge="start"
-                    checked={props.checked.includes(value.key)}
+                    checked={props.checked.includes(value.name)}
                     tabIndex={-1}
                     disableRipple
                     inputProps={{ 'aria-labelledby': labelId }}

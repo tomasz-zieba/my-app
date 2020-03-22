@@ -30,6 +30,7 @@ function App (props) {
 
     useEffect(() => {
         onTryAutoSignup();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     let routes = (
@@ -37,7 +38,6 @@ function App (props) {
             <Route path="/" exact component={Main} /> 
             <Route path="/login" exact component={Login}/> 
             <Route path="/signup" exact component={Signup}/>
-            <Redirect to="/" />
         </Switch>
       );
     if ( isAuth ) {

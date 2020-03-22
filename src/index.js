@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {BrowserRouter} from 'react-router-dom';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from '@material-ui/styles';
@@ -38,11 +37,11 @@ const logger = store => {
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 export default function configureStore(preloadedState) {
     const store = createStore(
-      createRootReducer(history), // root reducer with router state
+      createRootReducer(history),
       preloadedState,
       composeEnhancers(
         applyMiddleware(
-          routerMiddleware(history), // for dispatching history actions
+          routerMiddleware(history),
           logger, 
           thunk
         ),
@@ -51,7 +50,7 @@ export default function configureStore(preloadedState) {
     return store
   }
 
-const store = configureStore(/* provide initial state if any */)
+const store = configureStore()
 
 ReactDOM.render(
     <div>

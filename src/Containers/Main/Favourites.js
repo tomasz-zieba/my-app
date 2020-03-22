@@ -26,16 +26,12 @@ function Favourites (props) {
     const infoElementText = useSelector(state => { return state.settings.infoElementText });
     const infoElementVariant = useSelector(state => { return state.settings.infoElementVariant });
     const infoDialogOpen = useSelector(state => { return state.settings.infoDialogOpen });
+    const requestSended = useSelector(state => { return state.settings.requestSended });
 
     const errorInfo = {
         label: 'Ups! Coś poszło nie tak.',
         paragraph: 'Wystąpił problem z połączeniem z serwerem. Spróbuj ponownie później.',
         buttonText : 'Przejdź na stronę główną'
-    }
-    const noFavouritesWallets = {
-        label: 'Brak ulubionych portfeli.',
-        paragraph: 'Aby móc wyświetlić stronę dodaj portfel do ulubionych.',
-        buttonText : 'Przejdź do listy portfeli'
     }
     
     const confirmationInfo = {
@@ -47,6 +43,7 @@ function Favourites (props) {
 
     useEffect(() => {
         onSendWalletsRequest();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const removeHandler = (key) => {
@@ -84,6 +81,8 @@ function Favourites (props) {
             MyWalletsList = <div className={classes.info}>Lista ulubionych jest pusta<span className={classes.infoSpan}></span></div>
         } else { 
             MyWalletsList = favouritesWalletsList.map(item => {
+                const startDate = item.startDate.split('T')[0];
+                const endDate = item.endDate.split('T')[0];
                 return (
                     <Card 
                         open={() => onWalletOpen(item.walletId, item.walletName)} 
@@ -94,8 +93,8 @@ function Favourites (props) {
                         key={item.walletId} 
                         walletKey={item.walletId} 
                         name={item.walletName} 
-                        endDate={item.endDate} 
-                        startDate={item.startDate} />
+                        endDate={endDate} 
+                        startDate={startDate} />
                     );
             })
         }
@@ -106,6 +105,7 @@ function Favourites (props) {
             <div style={{display: 'flex', flexWrap: 'wrap'}}>
                 {MyWalletsList}
             </div>
+            {requestSended ? <Loader /> : ''}
             <InfoDialog open={infoDialogOpen} text={errorInfo} handleClose={InfoELementClose}/>
             <InfoDialog open={confirmationDialogOpen} text={confirmationInfo} handleClose={confirmationDialogConfirm} handleCancel={confirmationDialogCancel}/>
             <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose}/>

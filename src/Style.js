@@ -1,5 +1,4 @@
 import { makeStyles } from '@material-ui/core/styles';
-import Media from '../node_modules/react-media';
 
 const drawerWidth = 240;
 

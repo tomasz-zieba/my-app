@@ -1,16 +1,16 @@
 import * as actionTypes from './actionTypes';
-import axios from '../../axios-wallets';
 import * as action from './index';
 
 export const setWalletData = (walletData) => {
-
     if(walletData === null) {
         return {
             type: actionTypes.SET_WALLET_DATA,
             incomes: [],
             expenses: [],
             totalIncome: 0,
-            totalExpense: 0
+            totalExpense: 0,
+            startDate: null,
+            endDate: null
         }
     }
 
@@ -18,78 +18,67 @@ export const setWalletData = (walletData) => {
     let expenses = [];
     let totalIncome = 0;
     let totalExpense = 0;
-    for (var incomesKey in walletData.incomes) {
-        if (walletData.incomes.hasOwnProperty(incomesKey)) {
-            totalIncome += +walletData.incomes[incomesKey].value;
-            walletData.incomes[incomesKey].operationKey = incomesKey;
-            incomes.push(walletData.incomes[incomesKey]);
-        }
-    }
-    for (var expenseKey in walletData.expenses) {
-        if (walletData.expenses.hasOwnProperty(expenseKey)) {
-            totalExpense += +walletData.expenses[expenseKey].value;
-            walletData.expenses[expenseKey].operationKey = expenseKey;
-            expenses.push(walletData.expenses[expenseKey]);
-        }
-    }
+    walletData.wallet.incomes.forEach( income => {
+        totalIncome += income.value;
+        incomes.push(income);
+    });
+    walletData.wallet.expenses.forEach( expense => {
+        totalExpense += expense.value;
+        expenses.push(expense);
+    });
     return {
         type: actionTypes.SET_WALLET_DATA,
         incomes: incomes,
         expenses: expenses,
         totalIncome: totalIncome,
-        totalExpense: totalExpense
+        totalExpense: totalExpense,
+        startDate: walletData.wallet.startDate,
+        endDate: walletData.wallet.endDate
     }
 }
 
 export const onSendWalletRequest = (walletId) => {
-    console.log(walletId);
     return (dispatch) => {
-        const userId = localStorage.getItem('userId');
+        dispatch(action.onRequestSended());
+
         const token = localStorage.getItem('token');
-        fetch('http://localhost:8080/wallet/' + walletId, {
+        fetch('https://virtual-wallet-tz.herokuapp.com/wallet/' + walletId, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + token
-            },
-            // body: JSON.stringify({
-            //     user: userId,
-            // })
+            }
         })
         .then(res => {
-            if (res.status !== 200 && res.status !== 201) {
-                throw new Error('Deleting a post failed!');
+            dispatch(action.onGetResponse());
+            if (res.status === 404) {
+                throw new Error('Could not find wallet.');
+            }
+            if (res.status === 403) {
+                throw new Error('Not authorized.');
+            }
+            if (res.status !== 200) {
+                throw new Error('Failed to fetch wallet data.');
             }
             return res.json();
             })
         .then (resData => {
-            console.log('resData')
-            console.log(resData)
-            // dispatch(setWalletData(response.data));
-            // dispatch(setTotalExpense(response.data.expenses));
+            dispatch(setWalletData(resData));
         })
         .catch(error => {
-        //    dispatch(onInfoELementOpen());
+            dispatch(action.onInfoDialogOpen(error.message));
         });
-
-
-        // axios.get('/Wallets/' + walletId + '.json')
-        //     .then (response => {
-        //         dispatch(setWalletData(response.data));
-        //     })
-        //     .catch(error => {
-        //     });
     }
 };
 
-export const onExpenseUpdate = (expenseData, response) => {
+export const onExpenseUpdate = (response) => {
     const newExpense = {
-        key: expenseData.key,
-        date: expenseData.date,
-        value: expenseData.value,
-        info: expenseData.info,
-        category: expenseData.category,
-        operationKey: response.data.name
+        key: response.key,
+        date: response.date,
+        value: response.value,
+        info: response.info,
+        category: response.category,
+        _id: response.operationId
     }
 
     return {
@@ -100,26 +89,55 @@ export const onExpenseUpdate = (expenseData, response) => {
 
 export const onSaveExpense = (data) => {
     return (dispatch) => {
-        axios.post('/Wallets/' + data.key + '/expenses.json', data)
-            .then (response => {
-                dispatch(action.onInfoELementOpen('success', 'Transakcja zapisana pomyślnie'));
-                dispatch(onExpenseUpdate(data, response));
+        dispatch(action.onRequestSended());
+
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+        const walletId = data.key;
+        const category = data.category;
+        const date = data.date;
+        const info = data.info;
+        const value = parseFloat(data.value);
+        fetch('https://virtual-wallet-tz.herokuapp.com/wallet-expense', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+            body: JSON.stringify({
+                walletId: walletId,
+                user: userId,
+                category: category,
+                date: date,
+                info: info,
+                value: value
             })
-            .catch(error => {
-                console.log(error);
-                dispatch(action.onInfoELementOpen('error', 'Błąd połączenia. Transakcja nie została zapisana.'));
-            });
+        })
+        .then(res => {
+            dispatch(action.onGetResponse());
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Adding new expense failed!');
+            }
+            return res.json();
+            })
+        .then (resData => {
+            dispatch(onExpenseUpdate(resData));
+            dispatch(action.onInfoELementOpen('success', 'Zasilenie konta zapisane pomyślnie.'));
+        })
+        .catch(error => {
+            console.log(error);
+            dispatch(action.onInfoELementOpen('error', 'Błąd połączenia. Zasilenie konta nie zostało zapisane.'));
+        });
     }
 };
 
-export const onIncomeUpdate = (incomeData, response) => {
+export const onIncomeUpdate = (response) => {
     const newIncome = {
-        key: incomeData.key,
-        date: incomeData.date,
-        value: incomeData.value,
-        info: incomeData.info,
-        category: incomeData.category,
-        operationKey: response.data.name
+        date: response.date,
+        value: response.value,
+        info: response.info,
+        category: response.category,
+        _id: response.operationId
     }
 
     return {
@@ -130,14 +148,44 @@ export const onIncomeUpdate = (incomeData, response) => {
 
 export const onSaveIncome = (data) => {
     return (dispatch) => {
-        axios.post('/Wallets/' + data.key + '/incomes.json', data)
-            .then (response => {
-                dispatch(action.onInfoELementOpen('success', 'Zasilenie konta zapisane pomyślnie.'));
-                dispatch(onIncomeUpdate(data, response));
+        dispatch(action.onRequestSended());
+
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+        const walletId = data.key;
+        const category = data.category;
+        const date = data.date;
+        const info = data.info;
+        const value = parseFloat(data.value);
+        fetch('https://virtual-wallet-tz.herokuapp.com/wallet-income', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+            body: JSON.stringify({
+                walletId: walletId,
+                user: userId,
+                category: category,
+                date: date,
+                info: info,
+                value: value
             })
-            .catch(error => {
-                console.log(error);
-                dispatch(action.onInfoELementOpen('error', 'Błąd połączenia. Zasilenie konta nie zostało zapisane.'));
-            });
+        })
+        .then(res => {
+            dispatch(action.onGetResponse());
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Adding new income failed!');
+            }
+            return res.json();
+        })
+        .then (resData => {
+            dispatch(onIncomeUpdate(resData));
+            dispatch(action.onInfoELementOpen('success', 'Zasilenie konta zapisane pomyślnie.'));
+        })
+        .catch(error => {
+            console.log(error);
+            dispatch(action.onInfoELementOpen('error', 'Błąd połączenia. Zasilenie konta nie zostało zapisane.'));
+        });
     }
 };

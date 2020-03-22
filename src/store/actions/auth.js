@@ -1,5 +1,6 @@
 import * as actionTypes from './actionTypes';
-import { push } from 'connected-react-router'
+import { push } from 'connected-react-router';
+import * as action from './index';
 
 const onLoginSuccess = (token, userId) => {
     return {
@@ -18,7 +19,7 @@ const onAuthFail = () => {
 export const authLogin = (event, authData) => {
     return (dispatch) => {
         event.preventDefault();
-        fetch('http://localhost:8080/auth/login', {
+        fetch('https://virtual-wallet-tz.herokuapp.com/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -29,12 +30,11 @@ export const authLogin = (event, authData) => {
         })
         })
         .then(res => {
-            if (res.status === 422) {
-            throw new Error('Validation failed.');
+            if (res.status === 401) {
+                throw new Error('User name or password are wrong.');
             }
             if (res.status !== 200 && res.status !== 201) {
-            console.log('Error!');
-            throw new Error('Could not authenticate you!');
+                throw new Error('Could not authenticate you.');
             }
             return res.json();
         })
@@ -49,8 +49,8 @@ export const authLogin = (event, authData) => {
             checkAuthTimeout(remainingMilliseconds);
             dispatch(onLoginSuccess(resData.token, resData.userId));
         })
-        .catch(err => {
-            console.log(err);
+        .catch(error => {
+            dispatch(action.onInfoELementOpen('error', error.message));
             dispatch(onAuthFail());
         });
     };
@@ -69,7 +69,7 @@ export const authLogout = () => {
 export const authSignup = (event, authData) => {
     return (dispatch) => {
         event.preventDefault();
-        fetch('http://localhost:8080/auth/signup',  {
+        fetch('https://virtual-wallet-tz.herokuapp.com/auth/signup',  {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -81,13 +81,10 @@ export const authSignup = (event, authData) => {
         })
         .then(res => {
             if (res.status === 422) {
-            throw new Error(
-                "Validation failed. Make sure the email address isn't used yet!"
-            );
+                throw new Error("Validation failed! Make sure user name isn't used yet!");
             }
             if (res.status !== 200 && res.status !== 201) {
-            console.log('Error!');
-            throw new Error('Creating a user failed!');
+                throw new Error('Creating a user failed!');
             }
             return res.json();
         })
@@ -95,7 +92,9 @@ export const authSignup = (event, authData) => {
             onAuthFail();
             dispatch(push('/login'))
         })
-        .catch(err => console.log(err))
+        .catch(error => { 
+            dispatch(action.onInfoELementOpen('error', error.message));   
+        })
     }
 };
 

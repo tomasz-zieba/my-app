@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useStyles from '../../Style';
 import * as actions from '../../store/actions/index';
+import Loader from '../../Components/Loader';
 import DatePicker from '../../Components/DatePicker';
 import StandardTextField from '../../Components/TextField';
 import Snackbars from '../../Components/SnackBar';
@@ -23,6 +24,7 @@ function WelcomPage (props) {
     const infoElementOpen = useSelector(state => { return state.settings.infoElementOpen });
     const infoElementText = useSelector(state => { return state.settings.infoElementText });
     const infoElementVariant = useSelector(state => { return state.settings.infoElementVariant });
+    const requestSended = useSelector(state => { return state.settings.requestSended });
     
     const handleStartDateChange = date => {
       setStartDate(date);
@@ -35,12 +37,10 @@ function WelcomPage (props) {
       setWalletName(event.target.value);
     }
     function sendAction() {
-      const startDateWithFormat = startDate.getDate().toString() + '.' + (startDate.getMonth() + 1).toString() + '.' + startDate.getFullYear().toString()
-      const endDateWithFormat = endDate.getDate().toString() + '.' + (endDate.getMonth() + 1).toString() + '.' + endDate.getFullYear().toString()
       const walletData = {
         walletName: walletName,
-        startDate: startDateWithFormat,
-        endDate: endDateWithFormat
+        startDate: startDate,
+        endDate: endDate
       }
       onFetchNewWallet(walletData);
     }
@@ -60,7 +60,8 @@ function WelcomPage (props) {
                 className={classes.margin}
                 >Stwórz portfel</Button>
             </div>
-              <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose}/>
+            {requestSended ? <Loader /> : ''}
+            <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose}/>
       </React.Fragment>
     )
 }

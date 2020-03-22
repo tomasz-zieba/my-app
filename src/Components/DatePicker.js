@@ -17,7 +17,7 @@ export default function DatePicker(props) {
           variant="inline"
           format="MM/dd/yyyy"
           margin="normal"
-          id="date-picker-inline"
+          className="date-picker-inline"
           label={props.label}
           value={props.date}
           onChange={props.onDateChange}

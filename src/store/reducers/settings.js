@@ -6,7 +6,8 @@ const initialState = {
     infoElementOpen: false,
     infoElementText: '',
     infoElementVariant: 'error',
-    infoDialogOpen: false
+    infoDialogOpen: false,
+    requestSended: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -18,24 +19,32 @@ const reducer = (state = initialState, action) => {
                 expenseCategories: action.expenseCategories
             }
         case actionTypes.ADD_NEW_INCOME_CATEGORY : 
+            const updatedIncomeCategories = [...state.incomeCategories];
+            if (!updatedIncomeCategories.includes(action.categoryName)) {
+                updatedIncomeCategories.push(action.categoryName);
+            }
             return {
                 ...state,
-                incomeCategories: [...state.incomeCategories, action.categoryName]
+                incomeCategories: [...updatedIncomeCategories]
             }
         case actionTypes.ADD_NEW_EXPENSE_CATEGORY : 
+            const updatedExpenseCategories = [...state.expenseCategories];
+            if (!updatedExpenseCategories.includes(action.categoryName)) {
+                updatedExpenseCategories.push(action.categoryName);
+            }
             return {
                 ...state,
-                expenseCategories: [...state.expenseCategories, action.categoryName]
+                expenseCategories: [...updatedExpenseCategories]
             }
         case actionTypes.INCOME_CATEGORIES_UPDATE :
             return {
                 ...state,
-                incomeCategories: state.incomeCategories.filter(category =>  !action.categoryKeys.includes(category.key))
+                incomeCategories: state.incomeCategories.filter(categoryName =>  !action.categoryNamesList.includes(categoryName))
             }
         case actionTypes.EXPENSE_CATEGORIES_UPDATE :
             return {
                 ...state,
-                expenseCategories: state.expenseCategories.filter(category =>  !action.categoryKeys.includes(category.key))
+                expenseCategories: state.expenseCategories.filter(categoryName =>  !action.categoryNamesList.includes(categoryName))
             }
         case actionTypes.INFO_ELEMENT_OPEN : 
             if(action.infoText === undefined || action.infoVariant === undefined) {
@@ -58,12 +67,22 @@ const reducer = (state = initialState, action) => {
         case actionTypes.INFO_DIALOG_OPEN :
             return {
                 ...state,
-                infoDialogOpen: true
+                infoDialogOpen: true,
             }
         case actionTypes.INFO_DIALOG_CLOSE :
             return {
                 ...state,
                 infoDialogOpen: false
+            }
+        case actionTypes.REQUEST_SENDED :
+                return {
+                    ...state,
+                    requestSended: true
+                }
+        case actionTypes.GET_RESPONSE :
+            return {
+                ...state,
+                requestSended: false
             }
         default :
             return state;

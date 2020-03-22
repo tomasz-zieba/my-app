@@ -23,7 +23,9 @@ export {
     onInfoELementOpen,
     onInfoELementClose,
     onInfoDialogOpen,
-    onInfoDialogClosed
+    onInfoDialogClosed,
+    onRequestSended,
+    onGetResponse
 } from './settings';
 
 export {

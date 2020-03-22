@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import { useDispatch} from 'react-redux';
+import { useSelector, useDispatch} from 'react-redux';
 
 import * as actions from '../../store/actions/index';
+import Snackbars from '../../Components/SnackBar';
 
 import useStyles from '../../Style';
 import StandardTextField from '../../Components/TextField';
@@ -16,16 +17,30 @@ function Login () {
 
     const dispatch = useDispatch();
     const onLoading = (event, authData) => dispatch(actions.authLogin(event, authData));
+    const onInfoELementOpen = (type, message) => dispatch(actions.onInfoELementOpen(type, message));
+    const onInfoELementClose = (event, reason) => dispatch(actions.onInfoELementClose(event, reason));
+
+    const infoElementOpen = useSelector(state => { return state.settings.infoElementOpen });
+    const infoElementText = useSelector(state => { return state.settings.infoElementText });
+    const infoElementVariant = useSelector(state => { return state.settings.infoElementVariant });
+
+    const loginSubmit = (event) => {
+        event.preventDefault();
+        if(loginUserName.length < 5) {
+            onInfoELementOpen('error', 'User name should be minimum 5 characters long.')
+            return false;
+        }
+        onLoading(event, {
+            name: loginUserName,
+            password: loginUserPassword
+            })
+    }
 
     return (
         <React.Fragment>
             <div style={{display: 'flex', justifyContent: 'space-evenly', flexWrap: 'wrap'}}>
                 <form
-                    onSubmit={ e => onLoading(e, {
-                        name: loginUserName,
-                        password: loginUserPassword
-                        })
-                    }
+                    onSubmit={loginSubmit}
                     style={{width: '251px', margin: '20px'}}
                 >
                     <StandardTextField label="Imię" changed={(event) => setLoginUserName(event.target.value)} value={loginUserName}/>
@@ -40,6 +55,7 @@ function Login () {
                     >Zaloguj się</Button>
                 </form>
             </div>
+            <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose}/>
       </React.Fragment>
     )
 };

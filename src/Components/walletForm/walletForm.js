@@ -3,6 +3,8 @@ import Button from '@material-ui/core/Button';
 import DatePicker from'../DatePicker';
 import StandardTextField from '../TextField';
 import Select from '../Select';
+import * as actions from '../../store/actions/index';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 
 function Expanditure (props) {
@@ -11,6 +13,12 @@ function Expanditure (props) {
     const [additionalInfo, setAdditionalInfo] = useState('')
     const [date, seteDate] = useState(new Date());
     const [category, setCategory] = useState('');
+
+    const dispatch = useDispatch();
+    const onInfoELementOpen = (type, message) => dispatch(actions.onInfoELementOpen(type, message));
+
+    const walletStartDate = useSelector(state => { return state.wallet.startDate });
+    const walletEndDate = useSelector(state => { return state.wallet.endDate });
 
     const useStyles = makeStyles(theme => ({
         root: {
@@ -43,24 +51,36 @@ function Expanditure (props) {
     }
 
     const clickHandler = () => {
-        if(value !== '' && category !== '') {
-            const dateWithFormat = date.getDate().toString() + '-' + (date.getMonth() + 1).toString() + '-' + date.getFullYear().toString()
-        
-            let fetchData = {
-                key: props.walletKey,
-                date: dateWithFormat,
-                value: value,
-                info: additionalInfo,
-                category: category
-            }
-            props.clickHandler(fetchData);
-            setValue('');
-            setAdditionalInfo('');
-            seteDate(new Date());
-            setCategory('');
-        } else {
-            alert('Kwota i kategoria transakcji muszą zostać uzupelnione');
+        if(isNaN(date.getTime())) {
+            onInfoELementOpen('error', "Podaj prawidłową datę.")
+            return false;
         }
+        if( value === '' ) {
+            onInfoELementOpen('error', "Podaj kwotę transakcji.")
+            return false;
+        }
+        if( category === '' ) {
+            onInfoELementOpen('error', "Podaj kategorię transakcji.")
+            return false;
+        }
+        if(!(new Date(walletStartDate).setHours(0,0,0,0) <= new Date(date).setHours(0,0,0,0) && new Date(walletEndDate).setHours(0,0,0,0) >= new Date(date).setHours(0,0,0,0))) {
+            onInfoELementOpen('error', "Data transakcji nie znajduje się w dacie ważności portfela.")
+            return false;
+        }
+        
+        const dateWithFormat = date.getFullYear().toString() + '-' + (date.getMonth() + 1).toString() + '-' + date.getDate().toString();
+        let fetchData = {
+            key: props.walletKey,
+            date: dateWithFormat,
+            value: value,
+            info: additionalInfo,
+            category: category
+        }
+        props.clickHandler(fetchData);
+        setValue('');
+        setAdditionalInfo('');
+        seteDate(new Date());
+        setCategory('');
     }
 
     return (
