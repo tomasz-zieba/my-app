@@ -19,6 +19,7 @@ const onAuthFail = () => {
 export const authLogin = (event, authData) => {
     return (dispatch) => {
         event.preventDefault();
+        dispatch(action.onRequestSended());
         fetch('https://virtual-wallet-tz.herokuapp.com/auth/login', {
         method: 'POST',
         headers: {
@@ -30,6 +31,7 @@ export const authLogin = (event, authData) => {
         })
         })
         .then(res => {
+            dispatch(action.onGetResponse());
             if (res.status === 401) {
                 throw new Error('User name or password are wrong.');
             }
@@ -69,6 +71,7 @@ export const authLogout = () => {
 export const authSignup = (event, authData) => {
     return (dispatch) => {
         event.preventDefault();
+        dispatch(action.onRequestSended());
         fetch('https://virtual-wallet-tz.herokuapp.com/auth/signup',  {
             method: 'PUT',
             headers: {
@@ -80,6 +83,7 @@ export const authSignup = (event, authData) => {
             })
         })
         .then(res => {
+            dispatch(action.onGetResponse());
             if (res.status === 422) {
                 throw new Error("Validation failed! Make sure user name isn't used yet!");
             }

@@ -3,7 +3,7 @@ import { useSelector, useDispatch} from 'react-redux';
 
 import * as actions from '../../store/actions/index';
 import Snackbars from '../../Components/SnackBar';
-
+import Loader from '../../Components/Loader';
 import useStyles from '../../Style';
 import StandardTextField from '../../Components/TextField';
 import Button from '@material-ui/core/Button';
@@ -23,6 +23,7 @@ function Login () {
     const infoElementOpen = useSelector(state => { return state.settings.infoElementOpen });
     const infoElementText = useSelector(state => { return state.settings.infoElementText });
     const infoElementVariant = useSelector(state => { return state.settings.infoElementVariant });
+    const requestSended = useSelector(state => { return state.settings.requestSended });
 
     const loginSubmit = (event) => {
         event.preventDefault();
@@ -55,6 +56,7 @@ function Login () {
                     >Zaloguj się</Button>
                 </form>
             </div>
+            {requestSended ? <Loader /> : ''}
             <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose}/>
       </React.Fragment>
     )
