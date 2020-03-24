@@ -21,7 +21,7 @@ const classes = useStyles();
      return <option value={item} key={item}>{item}</option>
  })
   return (
-    <div>
+    <div style={{display: 'flex', justifyContent: 'space-around'}}>
       <FormControl className={classes.formControl}>
         <InputLabel htmlFor="age-native-simple">Wybierz kategorię</InputLabel>
         <Select

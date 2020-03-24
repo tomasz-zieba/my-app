@@ -32,6 +32,9 @@ function Expanditure (props) {
           borderColor: theme.palette.primary.dark,
           marginBottom: '30px'
         },
+        select: {
+            margin: '0 auto'
+        }
       }));
 
     const classes = useStyles();
@@ -84,7 +87,7 @@ function Expanditure (props) {
     }
 
     return (
-        <div style={{width: '251px'}}>
+        <div style={{width: '300px'}}>
             <div className={classes.root}>{props.label}</div>
             <DatePicker label={props.dateLabel} date={date} onDateChange={handleDateChange}/>
             <StandardTextField 
@@ -97,6 +100,7 @@ function Expanditure (props) {
                 value={additionalInfo}
                 changed={inputChangeHandler}/>
             <Select 
+                className={classes.select}
                 categories={props.categories} 
                 optionCategory={category}
                 handleChange={OptionHandleChange}/>

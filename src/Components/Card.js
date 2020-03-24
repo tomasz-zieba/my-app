@@ -9,11 +9,15 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { withRouter } from "react-router";
 import walletImg from '../assets/wallet.jpg';
+import theme from '../theme';
 
 const useStyles = makeStyles({
   card: {
     maxWidth: 345,
-    margin: '30px 50px'
+    margin: '30px 50px',
+    [theme.breakpoints.down(757)]: {
+      margin: '0'
+    }
   },
   cardName: {
     display: 'flex',

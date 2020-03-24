@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => (
   {
   root: {
     height: 'auto',
-    width: '90%',
+    width: '100%',
     margin: '0 auto'
   },
   chartContainer: {
@@ -25,7 +25,11 @@ const useStyles = makeStyles(theme => (
   stats: {
     marginTop: theme.spacing(2),
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    [theme.breakpoints.down(500)]: {
+      justifyContent: 'space-between',
+    }
   },
   device: {
     textAlign: 'center',
@@ -123,7 +127,7 @@ const Summary = props => {
               <Typography variant="body1">{device.title}</Typography>
               <Typography
                 style={{ color: device.color }}
-                variant="h2"
+                variant="h3"
               >
                 {device.value}%
               </Typography>

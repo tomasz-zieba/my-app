@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
+import Media from 'react-media';
 import {
   Card,
   CardActions,
@@ -21,13 +22,17 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 const useStyles = makeStyles(theme => ({
   root: {
       margin: '50px auto',
-      width: '90%'
+      width: '100%'
   },
   content: {
     padding: 0,
   },
   inner: {
-    minWidth: 800
+    minWidth: 800,
+    [theme.breakpoints.down(979)]: {
+      minWidth: 'unset',
+      display: 'block'
+    }
   },
   statusContainer: {
     display: 'flex',
@@ -38,6 +43,16 @@ const useStyles = makeStyles(theme => ({
   },
   actions: {
     justifyContent: 'flex-end'
+  },
+  table: {
+    [theme.breakpoints.down(500)]: {
+      display: 'block'
+    }
+  },
+  TableCell: {
+    [theme.breakpoints.down(500)]: {
+      padding: '10px 15px 10px 15px'
+    }
   }
 }));
 
@@ -48,10 +63,12 @@ const LatestOperations = props => {
   const operationsType = props.operationstype;
   let table = (<TableBody>
                 <TableRow hover>
-                  <TableCell>Ładuję dane...</TableCell>
-                  <TableCell>Ładuję dane...</TableCell>
-                  <TableCell>Ładuję dane...</TableCell>
-                  <TableCell>Ładuję dane...</TableCell>
+                  <TableCell className={classes.TableCell}>Ładuję dane...</TableCell>
+                  <Media query="(min-width: 500px)" render={() =>(
+                    <TableCell className={classes.TableCell}>Ładuję dane...</TableCell>
+                  )} />
+                  <TableCell className={classes.TableCell}>Ładuję dane...</TableCell>
+                  <TableCell className={classes.TableCell}>Ładuję dane...</TableCell>
                 </TableRow>
               </ TableBody>)
 
@@ -60,10 +77,12 @@ const LatestOperations = props => {
                 return (
                   <TableBody key={operation._id}>
                     <TableRow hover>
-                    <TableCell>{operation.date}</TableCell>
-                    <TableCell>{operation.info}</TableCell>
-                    <TableCell>{operation.category}</TableCell>
-                    <TableCell>{operation.value.toFixed(2)}</TableCell>
+                    <TableCell className={classes.TableCell}>{operation.date}</TableCell>
+                    <Media query="(min-width: 500px)" render={() =>(
+                      <TableCell className={classes.TableCell}>{operation.info}</TableCell>
+                    )} />
+                    <TableCell className={classes.TableCell}>{operation.category}</TableCell>
+                    <TableCell className={classes.TableCell}>{operation.value.toFixed(2)}</TableCell>
                     </TableRow>
                   </ TableBody>
                 )})
@@ -81,13 +100,15 @@ const LatestOperations = props => {
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
-            <Table>
+            <Table className={classes.table}>
               <TableHead>
                 <TableRow>
-                  <TableCell>Data operacji</TableCell>
-                  <TableCell>Opis</TableCell>
-                  <TableCell>Kategoria</TableCell>
-                  <TableCell>Kwota</TableCell>
+                  <TableCell className={classes.TableCell}>Data operacji</TableCell>
+                  <Media query="(min-width: 500px)" render={() =>(
+                    <TableCell className={classes.TableCell}>Opis</TableCell>
+                  )} />
+                  <TableCell className={classes.TableCell}>Kategoria</TableCell>
+                  <TableCell className={classes.TableCell}>Kwota</TableCell>
                 </TableRow>
               </TableHead>
                 {table} 

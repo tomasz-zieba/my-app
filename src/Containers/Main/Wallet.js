@@ -10,11 +10,17 @@ import Snackbars from '../../Components/SnackBar';
 import LatestOperations from '../../Components/LatestOperations/LatestOperations';
 import Summary from '../../Components/summary';
 import { useTheme } from '@material-ui/styles';
+import Media from 'react-media';
+import Button from '@material-ui/core/Button';
+import Drawer from '@material-ui/core/Drawer';
 
 function Wallet(props) {
+
     const theme = useTheme();
     const [summary, setSummary] = useState([]);
-    
+    const [expenseDrawerOpen, setExpenseDrawerOpen] = useState(false);
+    const [incomeDrawerOpen, setIncomeDrawerOpen] = useState(false);
+
     const dispatch = useDispatch();
     const onSendWalletRequest = (walletId) => dispatch(actions.onSendWalletRequest(walletId));
     const onSendCategoriesRequest = () => dispatch(actions.onSendCategoriesRequest());
@@ -103,26 +109,85 @@ function Wallet(props) {
     const latestExpense = expenses.filter((expense, index) => index < 5)
     return (
         <React.Fragment>
-            <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: "space-around"}}>
-                <WalletForm 
-                    label={'Dodaj nową transakcję'}
-                    dateLabel={'Data transakcji: '}
-                    categories={expenseCategories}   
-                    clickHandler={(data) => expenseClickHandler(data)}
-                    walletKey={props.match.params.id}
-                   />
-                <div>
-                    <InfoLabel value={totalIncome} name={'WPŁYWY'}/>
-                    <InfoLabel value={totalExpense} name={'WYDATKI'}/>
+                <Media query="(min-width: 980px)" render={() =>
+                    (
+                    <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: "space-around"}}>
+                        <WalletForm 
+                            label={'Dodaj nową transakcję'}
+                            dateLabel={'Data transakcji: '}
+                            categories={expenseCategories}   
+                            clickHandler={(data) => expenseClickHandler(data)}
+                            walletKey={props.match.params.id}
+                        />
+                        <div>
+                            <InfoLabel value={totalIncome} name={'WPŁYWY'}/>
+                            <InfoLabel value={totalExpense} name={'WYDATKI'}/>
+                        </div>
+                        <WalletForm 
+                            label={'Zasil konto'}
+                            dateLabel={'Data wpływu: '}
+                            categories={incomeCategories} 
+                            clickHandler={(data) => incomeClickHandler(data)}
+                            walletKey={props.match.params.id}
+                        />
+                   </div>
+                    )}
+                />
+            <Media query="(max-width: 979px)" render={() => 
+            (
+                <div style={{display: 'flex', flexDirection: 'column'}}>
+                    <InfoLabel 
+                        style={{width: '100%', marginBottom: '15px'}}
+                        value={totalIncome} 
+                        name={'WPŁYWY'}/>
+                    <InfoLabel 
+                        style={{width: '100%', marginBottom: '15px'}}
+                        value={totalExpense} 
+                        name={'WYDATKI'}/>
+                    <Button 
+                        style={{width: '100%', marginBottom: '15px'}}
+                        onClick={() => setExpenseDrawerOpen(true)} 
+                        color="primary"
+                        variant="contained" 
+                        size="large" >
+                        {'Dodaj transakcję'}
+                    </Button>
+                    <Button 
+                        style={{width: '100%', marginBottom: '15px'}}
+                        onClick={() => setIncomeDrawerOpen(true)} 
+                        variant="contained" 
+                        size="large" 
+                        color="primary"  
+                        autoFocus>
+                        {'Zasil portfel'}
+                    </Button>
+                    <Drawer 
+                        anchor={'right'} 
+                        open={expenseDrawerOpen} 
+                        onClose={() => setExpenseDrawerOpen(false)}>
+                        <WalletForm 
+                            label={'Dodaj nową transakcję'}
+                            dateLabel={'Data transakcji: '}
+                            categories={expenseCategories}   
+                            clickHandler={(data) => expenseClickHandler(data)}
+                            walletKey={props.match.params.id}
+                        />
+                    </Drawer>
+                    <Drawer 
+                        anchor={'right'} 
+                        open={incomeDrawerOpen} 
+                        onClose={() => setIncomeDrawerOpen(false)}>
+                        <WalletForm 
+                            label={'Zasil konto'}
+                            dateLabel={'Data wpływu: '}
+                            categories={incomeCategories} 
+                            clickHandler={(data) => incomeClickHandler(data)}
+                            walletKey={props.match.params.id}
+                        />
+                    </Drawer>
                 </div>
-                <WalletForm 
-                    label={'Zasil konto'}
-                    dateLabel={'Data wpływu: '}
-                    categories={incomeCategories} 
-                    clickHandler={(data) => incomeClickHandler(data)}
-                    walletKey={props.match.params.id}
-                   />
-            </div>
+            )}
+            />
             <LatestOperations operations={latestIncomes} label={'Ostatnie wpłaty'} operationstype={'incomes'} onClick={seeAllOperationsHandler} buttonmore={incomes.length > 5 ? 'true' : 'false'}/>
             <LatestOperations operations={latestExpense} label={'Ostatnie wypłaty'} operationstype={'expenses'} onClick={seeAllOperationsHandler} buttonmore={expenses.length > 5 ? 'true' : 'false'}/>
             <Summary summarydata={summary} title={'Staystyki wydatków'}/>

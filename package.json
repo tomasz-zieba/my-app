@@ -1,6 +1,6 @@
 {
-  "homepage": "https://tomasz-zieba.github.io/my-app",
-  "name": "my-app",
+  "homepage": "https://virtual-wallet-12a21.firebaseapp.com/",
+  "name": "virtual-wallet",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
