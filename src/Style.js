@@ -73,6 +73,62 @@ const useStyles = makeStyles(theme => ({
     maxWidth: '100%',
     padding: theme.spacing(3),
   },
+  mainGridWrapper: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridTemplateRows: 'repeat(2, 1fr)',
+    gridColumnGap: '15px',
+    gridRowGap: '15px',
+    maxWidth: '500px',
+    margin: '0 auto',
+  },
+  mainGridCellLink : {
+    textDecoration: 'none',
+    textTransform: 'uppercase',
+    color: 'white',
+    fontSize: '14px'
+  },
+  mainGridCell_1: {
+    gridArea: '2 / 1 / 3 / 2',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100px',
+    background: '#3f51b5',
+    flexDirection: 'column'
+  },
+  mainGridCell_2: {
+    gridArea: '2 / 2 / 3 / 3',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100px',
+    background: '#3f51b5',
+    flexDirection: 'column'
+  },
+  mainGridCell_3: {
+    gridArea: '1 / 2 / 2 / 3',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100px',
+    background: '#3f51b5',
+    flexDirection: 'column'
+  },
+  mainGridCell_4: {
+    gridArea: '1 / 1 / 2 / 2',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100px',
+    background: '#3f51b5',
+    flexDirection: 'column'
+  },
+  mainGridCellIcon: {
+    color: 'white',
+    minWidth: 'unset',
+    paddingBottom: '5px',
+  }
 }));
 
 export default useStyles;
