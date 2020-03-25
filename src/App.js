@@ -32,6 +32,10 @@ function App (props) {
         onTryAutoSignup();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    
+    const drawerToggle = () => {
+        setOpen(!open)
+    }
 
     let routes = (
         <Switch>
@@ -57,11 +61,11 @@ function App (props) {
     return (
         <div className={classes.root}>
             
-                <Header text={props.history.location.title} open={open} DrawerOpen={() => setOpen(!open)}/>
-                <MiniDrawer open={open} DrawerClosed={() => setOpen(!open)} />
+                <Header text={props.history.location.title} open={open} DrawerToggle={drawerToggle}/>
+                <MiniDrawer open={open} DrawerToggle={drawerToggle} />
                 <Media queries={{small: "(max-width: 599px)"}}>
                 {matches => (
-                <main className={classes.content} style={matches.small && !open ? {marginLeft: '-57px'} : null}>
+                <main className={classes.content}>
                     <div className={classes.toolbar} />
                     {routes}
                 </main>

@@ -16,13 +16,19 @@ const useStyles = makeStyles({
     maxWidth: 345,
     margin: '30px 50px',
     [theme.breakpoints.down(757)]: {
-      margin: '0'
+      margin: '0 0 30px 0',
     }
   },
   cardName: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center'
+  },
+  Button: {
+    [theme.breakpoints.down(380)]: {
+      fontSize: '12px',
+      padding: '0'
+    }
   }
 });
 
@@ -49,11 +55,11 @@ function ImgMediaCard(props) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button onClick={props.open} size="small" color="primary">Otwórz</Button>
-        <Button onClick={props.onRemove} size="small" color="primary">
+        <Button className={classes.Button} onClick={props.open} size="small" color="primary">Otwórz</Button>
+        <Button className={classes.Button} onClick={props.onRemove} size="small" color="primary">
           Usuń
         </Button>
-        <Button onClick={props.favouritesToggle} size="small" color="primary">{props.favouritesButtonText}</Button>
+        <Button className={classes.Button} onClick={props.favouritesToggle} size="small" color="primary">{props.favouritesButtonText}</Button>
       </CardActions>
     </Card>
   );

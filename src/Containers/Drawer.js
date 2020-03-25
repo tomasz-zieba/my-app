@@ -108,14 +108,9 @@ export default function MiniDrawer(props) {
   return (
     <React.Fragment>
       <CssBaseline />
-      <Media queries={{
-          small: "(max-width: 599px)",
-          medium: "(min-width: 600px) and (max-width: 1199px)",
-          large: "(min-width: 1200px)"
-        }}>
-        {matches => (
+      <Media query="(min-width: 980px)" render={() => (
         <Drawer
-          variant={matches.small ? 'persistent' : 'permanent'}
+          variant={'permanent'}
           className={
             clsx(classes.drawer, {
             [classes.drawerOpen]: props.open,
@@ -130,7 +125,7 @@ export default function MiniDrawer(props) {
           open={props.open}
         >
           <div className={classes.toolbar}>
-            <IconButton onClick={props.DrawerClosed}>
+            <IconButton onClick={props.DrawerToggle}>
               {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
             </IconButton>
           </div>
@@ -138,7 +133,22 @@ export default function MiniDrawer(props) {
           {authLinks}
         </Drawer>
         )}
-      </Media>
+      />
+
+      <Media query="(max-width: 979px)" render={() => (
+        <Drawer 
+          onClick={props.DrawerToggle}
+          anchor={'right'} 
+          open={props.open} 
+          onClose={props.DrawerToggle}>
+          <div 
+            className={classes.toolbar}
+            style={{width: '300px'}}>
+          </div>
+          <Divider />
+          {authLinks}
+      </Drawer>
+      )} />
     </React.Fragment>
   );
 }

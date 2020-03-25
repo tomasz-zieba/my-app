@@ -6,12 +6,22 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-
+import { makeStyles } from '@material-ui/core/styles';
 
 import useStyles from '../Style';
 
 function Header (props) {
+    
+    const useStyles = makeStyles(theme => ({
+        Toolbar: {
+            [theme.breakpoints.down(980)]: {
+                justifyContent: 'space-between',
+                flexDirection: 'row-reverse'
+            }
+        }
+      }));
     const classes = useStyles();
+
     return (
       <React.Fragment>
         <CssBaseline />
@@ -21,11 +31,11 @@ function Header (props) {
             [classes.appBarShift]: props.open,
             })}
         >
-            <Toolbar>
+            <Toolbar className={classes.Toolbar}>
             <IconButton
                 color="inherit"
                 aria-label="open drawer"
-                onClick={props.DrawerOpen}
+                onClick={props.DrawerToggle}
                 edge="start"
                 className={clsx(classes.menuButton, {
                 [classes.hide]: props.open,

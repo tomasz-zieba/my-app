@@ -49,9 +49,27 @@ const useStyles = makeStyles(theme => ({
       display: 'block'
     }
   },
+  TableHead: {
+    [theme.breakpoints.down(500)]: {
+      display: 'flex',
+    }
+  },
+  TableBody: {
+    [theme.breakpoints.down(500)]: {
+      display: 'flex'
+    }
+  },
+  TableRow: {
+    [theme.breakpoints.down(500)]: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      width: '100%'
+    }
+  },
   TableCell: {
     [theme.breakpoints.down(500)]: {
-      padding: '10px 15px 10px 15px'
+      padding: '10px 15px 10px 15px',
+      flex: '1'
     }
   }
 }));
@@ -61,8 +79,8 @@ const LatestOperations = props => {
 
   const classes = useStyles();
   const operationsType = props.operationstype;
-  let table = (<TableBody>
-                <TableRow hover>
+  let table = (<TableBody className={classes.TableBody}>
+                <TableRow className={classes.TableRow} hover>
                   <TableCell className={classes.TableCell}>Ładuję dane...</TableCell>
                   <Media query="(min-width: 500px)" render={() =>(
                     <TableCell className={classes.TableCell}>Ładuję dane...</TableCell>
@@ -75,8 +93,8 @@ const LatestOperations = props => {
   if (props.operations !== null) {
     table = props.operations.map((operation) => {
                 return (
-                  <TableBody key={operation._id}>
-                    <TableRow hover>
+                  <TableBody className={classes.TableBody} key={operation._id}>
+                    <TableRow className={classes.TableRow} hover>
                     <TableCell className={classes.TableCell}>{operation.date}</TableCell>
                     <Media query="(min-width: 500px)" render={() =>(
                       <TableCell className={classes.TableCell}>{operation.info}</TableCell>
@@ -101,8 +119,8 @@ const LatestOperations = props => {
         <PerfectScrollbar>
           <div className={classes.inner}>
             <Table className={classes.table}>
-              <TableHead>
-                <TableRow>
+              <TableHead className={classes.TableHead}>
+                <TableRow className={classes.TableRow}>
                   <TableCell className={classes.TableCell}>Data operacji</TableCell>
                   <Media query="(min-width: 500px)" render={() =>(
                     <TableCell className={classes.TableCell}>Opis</TableCell>

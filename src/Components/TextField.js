@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginLeft: theme.spacing(0),
     marginRight: theme.spacing(0),
-    width: 251,
+    width: 251
   },
 }));
 
