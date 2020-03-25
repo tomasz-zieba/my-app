@@ -125,8 +125,8 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column'
   },
   mainGridCellIcon: {
-    color: 'white',
-    minWidth: 'unset',
+    color: 'white !important',
+    minWidth: 'unset !important',
     paddingBottom: '5px',
   }
 }));
