@@ -23,8 +23,8 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import DonutLargeIcon from '@material-ui/icons/DonutLarge';
 import LockIcon from '@material-ui/icons/Lock';
 
-import * as actions from '../store/actions/index';
 import { useDispatch, useSelector } from 'react-redux';
+import * as actions from '../store/actions/index';
 
 import useStyles from '../Style';
 
@@ -35,120 +35,127 @@ export default function MiniDrawer(props) {
   const dispatch = useDispatch();
   const onLogout = () => dispatch(actions.authLogout());
 
-  const isAuth = useSelector(state => { return state.auth.isAuth })
+  const isAuth = useSelector((state) => state.auth.isAuth);
 
   let authLinks;
 
-  if(!isAuth) {
+  if (!isAuth) {
     authLinks = (
       <List>
-        <NavLink to='/' exact activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-          <ListItem button key='main'>
+        <NavLink to="/" exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ListItem button key="main">
             <ListItemIcon><DonutLargeIcon /></ListItemIcon>
-            <ListItemText primary={'Strona główna'} />
+            <ListItemText primary="Strona główna" />
           </ListItem>
         </NavLink>
-        <NavLink to='/login' exact activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-          <ListItem button key='login'>
+        <NavLink to="/login" exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ListItem button key="login">
             <ListItemIcon><ExitToAppIcon /></ListItemIcon>
-            <ListItemText primary={'Zaloguj się'} />
+            <ListItemText primary="Zaloguj się" />
           </ListItem>
         </NavLink>
-        <NavLink to='/signup' exact activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-          <ListItem button key='signup'>
+        <NavLink to="/signup" exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ListItem button key="signup">
             <ListItemIcon><PersonAddIcon /></ListItemIcon>
-            <ListItemText primary={'Załóż konto'} />
+            <ListItemText primary="Załóż konto" />
           </ListItem>
         </NavLink>
       </List>
-    )
+    );
   } else {
     authLinks = (
       <List>
-        <NavLink to='/' exact activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-          <ListItem button key='Main'>
+        <NavLink to="/" exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ListItem button key="Main">
             <ListItemIcon><DonutLargeIcon /></ListItemIcon>
-            <ListItemText primary={'Strona główna'} />
+            <ListItemText primary="Strona główna" />
           </ListItem>
         </NavLink>
-        <NavLink to='/new-wallet' exact activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-          <ListItem button key='Nowy portfel'>
+        <NavLink to="/new-wallet" exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ListItem button key="Nowy portfel">
             <ListItemIcon><AccountBalanceWalletIcon /></ListItemIcon>
-            <ListItemText primary={'Nowy portfel'} />
+            <ListItemText primary="Nowy portfel" />
           </ListItem>
         </NavLink>
-        <NavLink to={{pathname: '/my-wallets', title: 'Lista dostępnych portfeli'}} exact activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-        <ListItem button key='Lista portfeli'>
-          <ListItemIcon><FormatListNumberedIcon/></ListItemIcon>
-          <ListItemText primary={'Lista portfeli'} />
-        </ListItem>
+        <NavLink to={{ pathname: '/my-wallets', title: 'Lista dostępnych portfeli' }} exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ListItem button key="Lista portfeli">
+            <ListItemIcon><FormatListNumberedIcon /></ListItemIcon>
+            <ListItemText primary="Lista portfeli" />
+          </ListItem>
         </NavLink>
-        <NavLink to={{pathname: '/favourites', title: 'Ulubione'}} exact activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-        <ListItem button key='Ulubionei'>
-          <ListItemIcon><StarIcon/></ListItemIcon>
-          <ListItemText primary={'Ulubione'} />
-        </ListItem>
+        <NavLink to={{ pathname: '/favourites', title: 'Ulubione' }} exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ListItem button key="Ulubionei">
+            <ListItemIcon><StarIcon /></ListItemIcon>
+            <ListItemText primary="Ulubione" />
+          </ListItem>
         </NavLink>
-        <NavLink to={{pathname: '/wallet-settings', title: 'Ustawienia'}} exact activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-        <ListItem button key='Ustawienia'>
-          <ListItemIcon><SettingsIcon /></ListItemIcon>
-          <ListItemText primary={'Ustawienia'} />
-        </ListItem>
+        <NavLink to={{ pathname: '/wallet-settings', title: 'Ustawienia' }} exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ListItem button key="Ustawienia">
+            <ListItemIcon><SettingsIcon /></ListItemIcon>
+            <ListItemText primary="Ustawienia" />
+          </ListItem>
         </NavLink>
-        <NavLink to='#' onClick={onLogout} activeClassName='active' style={{textDecoration: 'none', color: 'inherit'}}>
-          <ListItem button key='Nowy portfel'>
+        <NavLink to="#" onClick={onLogout} activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ListItem button key="Nowy portfel">
             <ListItemIcon><LockIcon /></ListItemIcon>
-            <ListItemText primary={'Wyloguj się'} />
+            <ListItemText primary="Wyloguj się" />
           </ListItem>
         </NavLink>
       </List>
-    )
+    );
   }
 
   return (
-    <React.Fragment>
+    <>
       <CssBaseline />
-      <Media query="(min-width: 980px)" render={() => (
-        <Drawer
-          variant={'permanent'}
-          className={
+      <Media
+        query="(min-width: 980px)"
+        render={() => (
+          <Drawer
+            variant="permanent"
+            className={
             clsx(classes.drawer, {
-            [classes.drawerOpen]: props.open,
-            [classes.drawerClose]: !props.open,
-          })}
-          classes={{
-            paper: clsx({
               [classes.drawerOpen]: props.open,
               [classes.drawerClose]: !props.open,
-            }),
-          }}
-          open={props.open}
-        >
-          <div className={classes.toolbar}>
-            <IconButton onClick={props.DrawerToggle}>
-              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-            </IconButton>
-          </div>
-          <Divider />
-          {authLinks}
-        </Drawer>
+            })
+}
+            classes={{
+              paper: clsx({
+                [classes.drawerOpen]: props.open,
+                [classes.drawerClose]: !props.open,
+              }),
+            }}
+            open={props.open}
+          >
+            <div className={classes.toolbar}>
+              <IconButton onClick={props.DrawerToggle}>
+                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+              </IconButton>
+            </div>
+            <Divider />
+            {authLinks}
+          </Drawer>
         )}
       />
 
-      <Media query="(max-width: 979px)" render={() => (
-        <Drawer 
-          onClick={props.DrawerToggle}
-          anchor={'right'} 
-          open={props.open} 
-          onClose={props.DrawerToggle}>
-          <div 
-            className={classes.toolbar}
-            style={{width: '300px'}}>
-          </div>
-          <Divider />
-          {authLinks}
-      </Drawer>
-      )} />
-    </React.Fragment>
+      <Media
+        query="(max-width: 979px)"
+        render={() => (
+          <Drawer
+            onClick={props.DrawerToggle}
+            anchor="right"
+            open={props.open}
+            onClose={props.DrawerToggle}
+          >
+            <div
+              className={classes.toolbar}
+              style={{ width: '300px' }}
+            />
+            <Divider />
+            {authLinks}
+          </Drawer>
+        )}
+      />
+    </>
   );
 }
