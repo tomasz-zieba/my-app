@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NativeSelects({ categories, optionCategory, className, handleChange }) {
+export default function NativeSelects({ categories, optionCategory, handleChange }) {
   const classes = useStyles();
   const options = categories.map((item) => <option value={item} key={item}>{item}</option>);
   return (
@@ -41,9 +41,8 @@ export default function NativeSelects({ categories, optionCategory, className, h
   );
 }
 
-// NativeSelects.propTypes = {
-//   categories: PropTypes.arrayOf(PropTypes.string).isRequired,
-//   optionCategory: PropTypes.string.isRequired,
-//   className: PropTypes.
-// };
-
+NativeSelects.propTypes = {
+  categories: PropTypes.arrayOf(PropTypes.string).isRequired,
+  optionCategory: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,
+};
