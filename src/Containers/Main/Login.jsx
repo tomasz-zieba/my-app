@@ -44,7 +44,7 @@ function Login() {
           onSubmit={loginSubmit}
           style={{ width: '251px', margin: '20px' }}
         >
-          <StandardTextField label="Imię" changed={(event) => setLoginUserName(event.target.value)} value={loginUserName} />
+          <StandardTextField type="text" label="Imię" changed={(event) => setLoginUserName(event.target.value)} value={loginUserName} />
           <StandardTextField type="password" label="Hasło" changed={(event) => setLoginUserPassword(event.target.value)} value={loginUserPassword} />
           <Button
             style={{ width: '100%', marginTop: '30px' }}

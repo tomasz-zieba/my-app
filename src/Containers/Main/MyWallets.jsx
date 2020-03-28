@@ -86,7 +86,7 @@ function MyWallets({ history }) {
 
   let MyWalletsList;
   if (myWallets !== undefined) {
-    MyWalletsList = myWallets.reverse().map((item) => {
+    MyWalletsList = myWallets.map((item) => {
       const startDate = item.startDate.split('T')[0];
       const endDate = item.endDate.split('T')[0];
       if (item.isFavourite === true) {

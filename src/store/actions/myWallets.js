@@ -42,7 +42,7 @@ export const onSendWalletsRequest = () => (dispatch) => {
         };
         fetchedWallets.push(wallet);
       });
-      dispatch(fetchWalletsSuccess(fetchedWallets));
+      dispatch(fetchWalletsSuccess(fetchedWallets.reverse()));
     });
 };
 
