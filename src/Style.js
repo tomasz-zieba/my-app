@@ -2,13 +2,13 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
   },
   rootWrap: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   info: {
     display: 'block',
@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     fontFamily: '"Roboto Condensed", sans-serif',
     fontWeight: '700',
     lineHeight: '1',
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
   },
   infoSpan: {
     width: '73px',
@@ -45,10 +45,10 @@ const useStyles = makeStyles(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    zIndex: '9999'
+    zIndex: '9999',
   },
   drawerOpenMobile: {
-    display: 'none'
+    display: 'none',
   },
   drawerClose: {
     transition: theme.transitions.create('width', {
@@ -82,11 +82,11 @@ const useStyles = makeStyles(theme => ({
     maxWidth: '500px',
     margin: '0 auto',
   },
-  mainGridCellLink : {
+  mainGridCellLink: {
     textDecoration: 'none',
     textTransform: 'uppercase',
     color: 'white',
-    fontSize: '14px'
+    fontSize: '14px',
   },
   mainGridCell_1: {
     gridArea: '2 / 1 / 3 / 2',
@@ -95,7 +95,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     minHeight: '100px',
     background: '#3f51b5',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   mainGridCell_2: {
     gridArea: '2 / 2 / 3 / 3',
@@ -104,7 +104,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     minHeight: '100px',
     background: '#3f51b5',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   mainGridCell_3: {
     gridArea: '1 / 2 / 2 / 3',
@@ -113,7 +113,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     minHeight: '100px',
     background: '#3f51b5',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   mainGridCell_4: {
     gridArea: '1 / 1 / 2 / 2',
@@ -122,13 +122,13 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     minHeight: '100px',
     background: '#3f51b5',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   mainGridCellIcon: {
     color: 'white !important',
     minWidth: 'unset !important',
     paddingBottom: '5px',
-  }
+  },
 }));
 
 export default useStyles;

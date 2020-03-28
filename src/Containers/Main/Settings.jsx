@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import Button from '@material-ui/core/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import Drawer from '@material-ui/core/Drawer';
 import Media from 'react-media';
+
+import Button from '@material-ui/core/Button';
+import Drawer from '@material-ui/core/Drawer';
+
+import * as actions from '../../store/actions/index';
 import useStyles from '../../Style';
 import StandardTextField from '../../Components/TextField';
 import CategoriesList from '../../Components/ListItem/CategoriesList';
 import Snackbars from '../../Components/SnackBar';
 import Loader from '../../Components/Loader';
 
-import * as actions from '../../store/actions/index';
-
-function Settings(props) {
+function Settings() {
   const classes = useStyles();
 
   const [incomeCategoryAdd, setIncomeCategoryAdd] = useState('');
@@ -25,9 +26,9 @@ function Settings(props) {
   const [expenseCategoryRemoveDrawer, setExpenseCategoryRemoveDrawer] = useState(false);
 
   const dispatch = useDispatch();
-  const onIncomeCategoryAdd = (IncomeCategory) => dispatch(actions.onIncomeCategoryAdd(IncomeCategory));
-  const onExpenseCategoryAdd = (ExpenseCategory) => dispatch(actions.onExpenseCategoryAdd(ExpenseCategory));
-  const onCategoryRemove = (keys, categoryType) => dispatch(actions.onCategoryRemove(keys, categoryType));
+  const onIncCatAdd = (IncomeCategory) => dispatch(actions.onIncomeCategoryAdd(IncomeCategory));
+  const onExpCatAdd = (ExpenseCategory) => dispatch(actions.onExpenseCategoryAdd(ExpenseCategory));
+  const onCatRem = (keys, categoryType) => dispatch(actions.onCategoryRemove(keys, categoryType));
   const onSendCategoriesRequest = () => dispatch(actions.onSendCategoriesRequest());
   const onInfoELementClose = (event, reason) => dispatch(actions.onInfoELementClose(event, reason));
   const onInfoELementOpen = (type, message) => dispatch(actions.onInfoELementOpen(type, message));
@@ -43,7 +44,7 @@ function Settings(props) {
     if (incomeCategories.length === 0) {
       onSendCategoriesRequest();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, []);
 
   const incomeInputChangeHandler = (event) => {
@@ -54,7 +55,8 @@ function Settings(props) {
       onInfoELementOpen('error', 'This category already exists.');
       return false;
     }
-    onIncomeCategoryAdd(incomeCategoryAdd);
+    onIncCatAdd(incomeCategoryAdd);
+    return true;
   };
 
   const expenseInputChangeHandler = (event) => {
@@ -65,14 +67,15 @@ function Settings(props) {
       onInfoELementOpen('error', 'This category already exists.');
       return false;
     }
-    onExpenseCategoryAdd(expenseCategoryAdd);
+    onExpCatAdd(expenseCategoryAdd);
+    return true;
   };
 
   const incomeCategoriesRemoveClickHandler = () => {
-    onCategoryRemove(incomeCategoriesChecked, 'income');
+    onCatRem(incomeCategoriesChecked, 'income');
   };
   const expenseCategoriesRemoveClickHandler = () => {
-    onCategoryRemove(expenseCategoriesChecked, 'expense');
+    onCatRem(expenseCategoriesChecked, 'expense');
   };
 
   const incomeHandleToggle = (categoryName) => () => {
@@ -152,37 +155,37 @@ function Settings(props) {
             <div style={{ maxWidth: '250px' }}>
               <div>
                 <StandardTextField
-          label="Dodaj kategorię wpływów"
-          value={incomeCategoryAdd}
-          changed={(event) => incomeInputChangeHandler(event)}
-        />
+                  label="Dodaj kategorię wpływów"
+                  value={incomeCategoryAdd}
+                  changed={(event) => incomeInputChangeHandler(event)}
+                />
                 <Button
-          onClick={incomeClickHandler}
-          style={{ width: '251px', marginTop: '30px' }}
-          variant="contained"
-          size="large"
-          color="primary"
-          className={classes.margin}
-        >
-Wyślij
-        </Button>
+                  onClick={incomeClickHandler}
+                  style={{ width: '251px', marginTop: '30px' }}
+                  variant="contained"
+                  size="large"
+                  color="primary"
+                  className={classes.margin}
+                >
+                  Wyślij
+                </Button>
               </div>
               <div>
                 <StandardTextField
-          label="Dodaj kategorię wydatków"
-          value={expenseCategoryAdd}
-          changed={(event) => expenseInputChangeHandler(event)}
-        />
+                  label="Dodaj kategorię wydatków"
+                  value={expenseCategoryAdd}
+                  changed={(event) => expenseInputChangeHandler(event)}
+                />
                 <Button
-          onClick={expenseClickHandler}
-          style={{ width: '251px', marginTop: '30px' }}
-          variant="contained"
-          size="large"
-          color="primary"
-          className={classes.margin}
-        >
-Wyślij
-        </Button>
+                  onClick={expenseClickHandler}
+                  style={{ width: '251px', marginTop: '30px' }}
+                  variant="contained"
+                  size="large"
+                  color="primary"
+                  className={classes.margin}
+                >
+                  Wyślij
+                </Button>
               </div>
             </div>
             <div style={{ maxWidth: '300px' }}>{incomeCategoriesList}</div>
@@ -240,21 +243,21 @@ Wyślij
             >
               <div style={{ width: '300px', margin: '10px' }}>
                 <StandardTextField
-          style={{ width: '300px' }}
-          label="Dodaj kategorię wpływów"
-          value={incomeCategoryAdd}
-          changed={(event) => incomeInputChangeHandler(event)}
-        />
+                  style={{ width: '300px' }}
+                  label="Dodaj kategorię wpływów"
+                  value={incomeCategoryAdd}
+                  changed={(event) => incomeInputChangeHandler(event)}
+                />
                 <Button
-          onClick={incomeClickHandler}
-          style={{ width: '300px', marginTop: '30px' }}
-          variant="contained"
-          size="large"
-          color="primary"
-          className={classes.margin}
-        >
-Wyślij
-        </Button>
+                  onClick={incomeClickHandler}
+                  style={{ width: '300px', marginTop: '30px' }}
+                  variant="contained"
+                  size="large"
+                  color="primary"
+                  className={classes.margin}
+                >
+                  Wyślij
+                </Button>
               </div>
             </Drawer>
             <Drawer
@@ -264,21 +267,21 @@ Wyślij
             >
               <div style={{ width: '300px', margin: '10px' }}>
                 <StandardTextField
-          style={{ width: '300px' }}
-          label="Dodaj kategorię wydatków"
-          value={expenseCategoryAdd}
-          changed={(event) => expenseInputChangeHandler(event)}
-        />
+                  style={{ width: '300px' }}
+                  label="Dodaj kategorię wydatków"
+                  value={expenseCategoryAdd}
+                  changed={(event) => expenseInputChangeHandler(event)}
+                />
                 <Button
-          onClick={expenseClickHandler}
-          style={{ width: '300px', marginTop: '30px' }}
-          variant="contained"
-          size="large"
-          color="primary"
-          className={classes.margin}
-        >
-Wyślij
-        </Button>
+                  onClick={expenseClickHandler}
+                  style={{ width: '300px', marginTop: '30px' }}
+                  variant="contained"
+                  size="large"
+                  color="primary"
+                  className={classes.margin}
+                >
+                  Wyślij
+                </Button>
               </div>
             </Drawer>
             <Drawer
@@ -299,7 +302,12 @@ Wyślij
         )}
       />
       {requestSended ? <Loader /> : ''}
-      <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose} />
+      <Snackbars
+        open={infoElementOpen}
+        variant={infoElementVariant}
+        message={infoElementText}
+        onClose={onInfoELementClose}
+      />
     </>
   );
 }

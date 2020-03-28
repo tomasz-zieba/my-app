@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { makeStyles } from '@material-ui/core/styles';
-
-import * as actions from '../../store/actions/index';
+import useStyles from '../../Style';
 import Loader from '../../Components/Loader';
 import Card from '../../Components/Card';
 import InfoDialog from '../../Components/DialogInfo';
 import Snackbars from '../../Components/SnackBar';
-import theme from '../../theme';
+import * as actions from '../../store/actions/index';
 
-function MyWallets({ history }) {
+function Favourites({ history }) {
+  const classes = useStyles();
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const [walletRemoveKey, setWalletRemoveKey] = useState('');
 
@@ -20,7 +19,6 @@ function MyWallets({ history }) {
   const onWalletRemove = (walletId) => dispatch(actions.onWalletRemove(walletId));
   const onInfoELementClose = () => dispatch(actions.onInfoELementClose());
   const onInfoDialogClosed = () => dispatch(actions.onInfoDialogClosed());
-  const onAddToFavourites = (walledId) => dispatch(actions.onAddToFavourites(walledId));
   const onRemoveFromFavourites = (walledId) => dispatch(actions.onRemoveFromFavourites(walledId));
 
   const myWallets = useSelector((state) => state.myWallets.myWallets);
@@ -43,23 +41,12 @@ function MyWallets({ history }) {
     buttonCancel: 'Anuluj',
   };
 
-  const useStyles = makeStyles({
-    walletsWrapper: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      [theme.breakpoints.down(979)]: {
-        justifyContent: 'center',
-      },
-    },
-  });
-  const classes = useStyles();
-
   useEffect(() => {
     onSendWalletsRequest();
     // eslint-disable-next-line
   }, []);
 
-  const WalletRemove = (key) => {
+  const removeHandler = (key) => {
     setWalletRemoveKey(key);
     setConfirmationDialogOpen(true);
   };
@@ -80,20 +67,31 @@ function MyWallets({ history }) {
     history.push('/');
   };
 
-  const onWalletOpen = (walletId, walletName) => {
-    history.push({ pathname: `/wallet/${walletId}`, title: walletName });
+  const onWalletOpen = (walletKey, walletName) => {
+    history.push({ pathname: `/wallet/${walletKey}`, title: walletName });
   };
 
   let MyWalletsList;
-  if (myWallets !== undefined) {
-    MyWalletsList = myWallets.reverse().map((item) => {
-      const startDate = item.startDate.split('T')[0];
-      const endDate = item.endDate.split('T')[0];
-      if (item.isFavourite === true) {
+  if (myWallets === undefined) {
+    MyWalletsList = <Loader />;
+  } else {
+    const favouritesWalletsList = myWallets.filter((wallet) => wallet.isFavourite === true);
+
+    if (favouritesWalletsList.length === 0) {
+      MyWalletsList = (
+        <div className={classes.info}>
+          Lista ulubionych jest pusta
+          <span className={classes.infoSpan} />
+        </div>
+      );
+    } else {
+      MyWalletsList = favouritesWalletsList.map((item) => {
+        const startDate = item.startDate.split('T')[0];
+        const endDate = item.endDate.split('T')[0];
         return (
           <Card
             open={() => onWalletOpen(item.walletId, item.walletName)}
-            onRemove={() => WalletRemove(item.key)}
+            onRemove={() => removeHandler(item.walletId)}
             favouritesToggle={() => onRemoveFromFavourites(item.walletId)}
             favouritesButtonText="Usuń z ulubionych"
             isFavourite="true"
@@ -104,27 +102,13 @@ function MyWallets({ history }) {
             startDate={startDate}
           />
         );
-      }
-      return (
-        <Card
-          open={() => onWalletOpen(item.walletId, item.walletName)}
-          onRemove={() => WalletRemove(item.walletId)}
-          favouritesToggle={() => onAddToFavourites(item.walletId)}
-          favouritesButtonText="Dodaj do ulubionych"
-          isFavourite="false"
-          key={item.walletId}
-          walletKey={item.walletId}
-          name={item.walletName}
-          endDate={endDate}
-          startDate={startDate}
-        />
-      );
-    });
+      });
+    }
   }
 
   return (
     <>
-      <div className={classes.walletsWrapper}>
+      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         {MyWalletsList}
       </div>
       {requestSended ? <Loader /> : ''}
@@ -149,8 +133,8 @@ function MyWallets({ history }) {
   );
 }
 
-export default MyWallets;
+export default Favourites;
 
-MyWallets.propTypes = {
+Favourites.propTypes = {
   history: PropTypes.objectOf((PropTypes.any)).isRequired,
 };

@@ -9,6 +9,8 @@ module.exports = {
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
+    "localStorage": true,
+    "fetch": true
   },
   parserOptions: {
     ecmaFeatures: {
@@ -22,5 +24,6 @@ module.exports = {
   ],
   rules: {
     'linebreak-style': 0,
+    "no-param-reassign": 0,
   },
 };

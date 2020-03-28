@@ -3,6 +3,7 @@ import Media from 'react-media';
 import clsx from 'clsx';
 import { useTheme } from '@material-ui/core/styles';
 import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -28,7 +29,7 @@ import * as actions from '../store/actions/index';
 
 import useStyles from '../Style';
 
-export default function MiniDrawer(props) {
+export default function MiniDrawer({ open, DrawerToggle }) {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -42,19 +43,19 @@ export default function MiniDrawer(props) {
   if (!isAuth) {
     authLinks = (
       <List>
-        <NavLink to="/" exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <NavLink to={{ pathname: '/', title: 'Strona główna' }} exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
           <ListItem button key="main">
             <ListItemIcon><DonutLargeIcon /></ListItemIcon>
             <ListItemText primary="Strona główna" />
           </ListItem>
         </NavLink>
-        <NavLink to="/login" exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <NavLink to={{ pathname: '/login', title: 'Logowanie' }} exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
           <ListItem button key="login">
             <ListItemIcon><ExitToAppIcon /></ListItemIcon>
             <ListItemText primary="Zaloguj się" />
           </ListItem>
         </NavLink>
-        <NavLink to="/signup" exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <NavLink to={{ pathname: '/signup', title: 'Nowe konto' }} exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
           <ListItem button key="signup">
             <ListItemIcon><PersonAddIcon /></ListItemIcon>
             <ListItemText primary="Załóż konto" />
@@ -65,13 +66,13 @@ export default function MiniDrawer(props) {
   } else {
     authLinks = (
       <List>
-        <NavLink to="/" exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <NavLink to={{ pathname: '/', title: 'Strona główna' }} exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
           <ListItem button key="Main">
             <ListItemIcon><DonutLargeIcon /></ListItemIcon>
             <ListItemText primary="Strona główna" />
           </ListItem>
         </NavLink>
-        <NavLink to="/new-wallet" exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <NavLink to={{ pathname: '/new-wallet', title: 'Nowy portfel' }} exact activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
           <ListItem button key="Nowy portfel">
             <ListItemIcon><AccountBalanceWalletIcon /></ListItemIcon>
             <ListItemText primary="Nowy portfel" />
@@ -95,7 +96,7 @@ export default function MiniDrawer(props) {
             <ListItemText primary="Ustawienia" />
           </ListItem>
         </NavLink>
-        <NavLink to="#" onClick={onLogout} activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <NavLink to={{ pathname: '/', title: 'Strona główna' }} onClick={onLogout} activeClassName="active" style={{ textDecoration: 'none', color: 'inherit' }}>
           <ListItem button key="Nowy portfel">
             <ListItemIcon><LockIcon /></ListItemIcon>
             <ListItemText primary="Wyloguj się" />
@@ -115,20 +116,20 @@ export default function MiniDrawer(props) {
             variant="permanent"
             className={
             clsx(classes.drawer, {
-              [classes.drawerOpen]: props.open,
-              [classes.drawerClose]: !props.open,
+              [classes.drawerOpen]: open,
+              [classes.drawerClose]: !open,
             })
 }
             classes={{
               paper: clsx({
-                [classes.drawerOpen]: props.open,
-                [classes.drawerClose]: !props.open,
+                [classes.drawerOpen]: open,
+                [classes.drawerClose]: !open,
               }),
             }}
-            open={props.open}
+            open={open}
           >
             <div className={classes.toolbar}>
-              <IconButton onClick={props.DrawerToggle}>
+              <IconButton onClick={DrawerToggle}>
                 {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
               </IconButton>
             </div>
@@ -142,10 +143,10 @@ export default function MiniDrawer(props) {
         query="(max-width: 979px)"
         render={() => (
           <Drawer
-            onClick={props.DrawerToggle}
+            onClick={DrawerToggle}
             anchor="right"
-            open={props.open}
-            onClose={props.DrawerToggle}
+            open={open}
+            onClose={DrawerToggle}
           >
             <div
               className={classes.toolbar}
@@ -159,3 +160,8 @@ export default function MiniDrawer(props) {
     </>
   );
 }
+
+MiniDrawer.propTypes = {
+  open: PropTypes.bool.isRequired,
+  DrawerToggle: PropTypes.func.isRequired,
+};

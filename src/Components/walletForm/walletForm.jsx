@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+
+import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+
 import DatePicker from '../DatePicker';
 import StandardTextField from '../TextField';
 import Select from '../Select';
 import * as actions from '../../store/actions/index';
 
-function Expanditure(props) {
+function Expanditure({
+  label, dateLabel, categories, clickHandler, walletKey,
+}) {
   const [value, setValue] = useState('');
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [date, seteDate] = useState(new Date());
@@ -38,8 +43,8 @@ function Expanditure(props) {
 
   const classes = useStyles();
 
-  const handleDateChange = (date) => {
-    seteDate(date);
+  const handleDateChange = (operationDate) => {
+    seteDate(operationDate);
   };
 
   const valueChangeHandler = (event) => {
@@ -52,8 +57,8 @@ function Expanditure(props) {
     setCategory(event.target.value);
   };
 
-  const clickHandler = () => {
-    if (isNaN(date.getTime())) {
+  const sendRequest = () => {
+    if (Number.isNaN(date.getTime())) {
       onInfoELementOpen('error', 'Podaj prawidłową datę.');
       return false;
     }
@@ -65,6 +70,7 @@ function Expanditure(props) {
       onInfoELementOpen('error', 'Podaj kategorię transakcji.');
       return false;
     }
+    // eslint-disable-next-line max-len
     if (!(new Date(walletStartDate).setHours(0, 0, 0, 0) <= new Date(date).setHours(0, 0, 0, 0) && new Date(walletEndDate).setHours(0, 0, 0, 0) >= new Date(date).setHours(0, 0, 0, 0))) {
       onInfoELementOpen('error', 'Data transakcji nie znajduje się w dacie ważności portfela.');
       return false;
@@ -72,23 +78,24 @@ function Expanditure(props) {
 
     const dateWithFormat = `${date.getFullYear().toString()}-${(date.getMonth() + 1).toString()}-${date.getDate().toString()}`;
     const fetchData = {
-      key: props.walletKey,
+      key: walletKey,
       date: dateWithFormat,
       value,
       info: additionalInfo,
       category,
     };
-    props.clickHandler(fetchData);
+    clickHandler(fetchData);
     setValue('');
     setAdditionalInfo('');
     seteDate(new Date());
     setCategory('');
+    return true;
   };
 
   return (
     <div style={{ width: '300px' }}>
-      <div className={classes.root}>{props.label}</div>
-      <DatePicker label={props.dateLabel} date={date} onDateChange={handleDateChange} />
+      <div className={classes.root}>{label}</div>
+      <DatePicker label={dateLabel} date={date} onDateChange={handleDateChange} />
       <StandardTextField
         label="Kwota"
         type="number"
@@ -99,16 +106,16 @@ function Expanditure(props) {
         label="Dodatkowe informacje"
         value={additionalInfo}
         changed={inputChangeHandler}
+        type="text"
       />
       <Select
-        categories={props.categories}
+        categories={categories}
         optionCategory={category}
         handleChange={OptionHandleChange}
       />
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
         <Button
-          onClick={clickHandler}
-          disabled={props.active}
+          onClick={sendRequest}
           style={{ width: '251px', marginTop: '30px' }}
           variant="contained"
           size="large"
@@ -123,3 +130,11 @@ function Expanditure(props) {
 }
 
 export default Expanditure;
+
+Expanditure.propTypes = {
+  label: PropTypes.string.isRequired,
+  dateLabel: PropTypes.string.isRequired,
+  categories: PropTypes.arrayOf(PropTypes.string).isRequired,
+  clickHandler: PropTypes.func.isRequired,
+  walletKey: PropTypes.string.isRequired,
+};

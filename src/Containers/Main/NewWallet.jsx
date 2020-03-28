@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import Button from '@material-ui/core/Button';
-import useStyles from '../../Style';
+
 import * as actions from '../../store/actions/index';
+import useStyles from '../../Style';
 import Loader from '../../Components/Loader';
 import DatePicker from '../../Components/DatePicker';
 import StandardTextField from '../../Components/TextField';
 import Snackbars from '../../Components/SnackBar';
 
 
-function WelcomPage(props) {
+function WelcomPage() {
   const [walletName, setWalletName] = useState('');
   const [startDate, setStartDate] = React.useState(new Date());
   const [endDate, setEndDate] = React.useState(new Date());
@@ -63,7 +65,12 @@ function WelcomPage(props) {
         </Button>
       </div>
       {requestSended ? <Loader /> : ''}
-      <Snackbars open={infoElementOpen} variant={infoElementVariant} message={infoElementText} onClose={onInfoELementClose} />
+      <Snackbars
+        open={infoElementOpen}
+        variant={infoElementVariant}
+        message={infoElementText}
+        onClose={onInfoELementClose}
+      />
     </>
   );
 }

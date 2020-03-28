@@ -1,46 +1,46 @@
 import React from 'react';
-import clsx from 'clsx';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
+
 import { makeStyles } from '@material-ui/styles';
-import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
+import {
+  Card, CardContent, Grid, Typography, Avatar,
+} from '@material-ui/core';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   root: {
     width: '250px',
-    marginBottom: '30px',
     backgroundColor: '#3f51b5',
-    color: 'white'
+    color: 'white',
+    minWidth: '100%',
+    marginBottom: '15px',
   },
   content: {
     alignItems: 'center',
-    display: 'flex'
+    display: 'flex',
   },
   title: {
-    fontWeight: 700
+    fontWeight: 700,
   },
   avatar: {
     backgroundColor: 'white',
     color: '#3f51b5',
     height: 56,
-    width: 56
+    width: 56,
   },
   icon: {
     height: 32,
-    width: 32
-  }
+    width: 32,
+  },
 }));
 
-const InfoLabel = props => {
-
-  const { className, ...rest } = props;
-
+const InfoLabel = ({ value, name }) => {
   const classes = useStyles();
 
   return (
     <Card
-      {...rest}
-      className={clsx(classes.root, className)}
+      className={clsx(classes.root)}
     >
       <CardContent>
         <Grid
@@ -54,13 +54,15 @@ const InfoLabel = props => {
               gutterBottom
               variant="body2"
             >
-              {props.name}
+              {name}
             </Typography>
             <Typography
               color="inherit"
               variant="h4"
             >
-              {props.value.toFixed(2)} zł
+              {value.toFixed(2)}
+              {' '}
+              zł
             </Typography>
           </Grid>
           <Grid item>
@@ -75,7 +77,8 @@ const InfoLabel = props => {
 };
 
 InfoLabel.propTypes = {
-  className: PropTypes.string
+  value: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 export default InfoLabel;

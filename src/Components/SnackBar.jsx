@@ -19,7 +19,7 @@ const variantIcon = {
   info: InfoIcon,
 };
 
-const useStyles1 = makeStyles(theme => ({
+const useStyles1 = makeStyles((theme) => ({
   success: {
     backgroundColor: green[600],
   },
@@ -47,38 +47,39 @@ const useStyles1 = makeStyles(theme => ({
 
 function MySnackbarContentWrapper(props) {
   const classes = useStyles1();
-  const { className, message, onClose, variant, ...other } = props;
+  const {
+    message, onClose, variant,
+  } = props;
   const Icon = variantIcon[variant];
 
   return (
     <SnackbarContent
-      className={clsx(classes[variant], className)}
+      className={clsx(classes[variant])}
       aria-describedby="client-snackbar"
-      message={
+      message={(
         <span id="client-snackbar" className={classes.message}>
           <Icon className={clsx(classes.icon, classes.iconVariant)} />
           {message}
         </span>
-      }
+      )}
       action={[
         <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
           <CloseIcon className={classes.icon} />
         </IconButton>,
       ]}
-      {...other}
     />
   );
 }
 
 MySnackbarContentWrapper.propTypes = {
-  className: PropTypes.string,
-  message: PropTypes.string,
-  onClose: PropTypes.func,
+  message: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
   variant: PropTypes.oneOf(['error', 'info', 'success', 'warning']).isRequired,
 };
 
-export default function CustomizedSnackbars(props) {
-    
+export default function CustomizedSnackbars({
+  open, onClose, variant, message,
+}) {
   return (
     <div>
       <Snackbar
@@ -86,16 +87,24 @@ export default function CustomizedSnackbars(props) {
           vertical: 'bottom',
           horizontal: 'left',
         }}
-        open={props.open}
+        open={open}
         autoHideDuration={6000}
-        onClose={props.onClose}
+        onClose={onClose}
       >
         <MySnackbarContentWrapper
-          onClose={props.onClose}
-          variant={props.variant}
-          message={props.message}
+          onClose={onClose}
+          variant={variant}
+          message={message}
         />
       </Snackbar>
     </div>
   );
 }
+
+
+CustomizedSnackbars.propTypes = {
+  open: PropTypes.bool.isRequired,
+  variant: PropTypes.string.isRequired,
+  message: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+};

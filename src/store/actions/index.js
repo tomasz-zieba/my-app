@@ -1,36 +1,37 @@
+/* eslint-disable import/no-cycle */
 export {
-    onFetchNewWallet
+  onFetchNewWallet,
 } from './newWallet';
 
 export {
-    onSendWalletsRequest,
-    onWalletRemove,
-    onAddToFavourites,
-    onRemoveFromFavourites
+  onSendWalletsRequest,
+  onWalletRemove,
+  onAddToFavourites,
+  onRemoveFromFavourites,
 } from './myWallets';
 
 export {
-    onSendWalletRequest,
-    onSaveExpense,
-    onSaveIncome
+  onSendWalletRequest,
+  onSaveExpense,
+  onSaveIncome,
 } from './wallet';
 
 export {
-    onIncomeCategoryAdd,
-    onExpenseCategoryAdd,
-    onCategoryRemove,
-    onSendCategoriesRequest,
-    onInfoELementOpen,
-    onInfoELementClose,
-    onInfoDialogOpen,
-    onInfoDialogClosed,
-    onRequestSended,
-    onGetResponse
+  onIncomeCategoryAdd,
+  onExpenseCategoryAdd,
+  onCategoryRemove,
+  onSendCategoriesRequest,
+  onInfoELementOpen,
+  onInfoELementClose,
+  onInfoDialogOpen,
+  onInfoDialogClosed,
+  onRequestSended,
+  onGetResponse,
 } from './settings';
 
 export {
-    authLogin,
-    authLogout,
-    authSignup,
-    authCheckState
-} from './auth'
+  authLogin,
+  authLogout,
+  authSignup,
+  authCheckState,
+} from './auth';
