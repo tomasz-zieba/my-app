@@ -53,7 +53,6 @@ function WelcomPage() {
       <DatePicker label="Do:" date={endDate} onDateChange={handleEndDateChange} />
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
         <Button
-          disabled={infoElementOpen}
           style={{ width: '251px', marginTop: '30px' }}
           onClick={sendAction}
           variant="contained"

@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import useStyles from '../../Style';
+import { makeStyles } from '@material-ui/core/styles';
+
 import Loader from '../../Components/Loader';
 import Card from '../../Components/Card';
 import InfoDialog from '../../Components/DialogInfo';
 import Snackbars from '../../Components/SnackBar';
+import theme from '../../theme';
 import * as actions from '../../store/actions/index';
 
 function Favourites({ history }) {
-  const classes = useStyles();
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const [walletRemoveKey, setWalletRemoveKey] = useState('');
 
@@ -40,6 +41,35 @@ function Favourites({ history }) {
     buttonText: 'Usuń portfel',
     buttonCancel: 'Anuluj',
   };
+
+  const useStyles = makeStyles({
+    walletsWrapper: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      [theme.breakpoints.down(979)]: {
+        justifyContent: 'center',
+      },
+    },
+    info: {
+      display: 'block',
+      width: '100%',
+      textAlign: 'center',
+      color: 'rgba(0, 0, 0, 0.87)',
+      fontSize: '25px',
+      fontFamily: '"Roboto Condensed", sans-serif',
+      fontWeight: '700',
+      lineHeight: '1',
+      textTransform: 'uppercase',
+    },
+    infoSpan: {
+      width: '73px',
+      height: '4px',
+      margin: '8px auto 0',
+      display: 'block',
+      backgroundColor: '#3f51b5',
+    },
+  });
+  const classes = useStyles();
 
   useEffect(() => {
     onSendWalletsRequest();
@@ -108,7 +138,7 @@ function Favourites({ history }) {
 
   return (
     <>
-      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+      <div className={classes.walletsWrapper}>
         {MyWalletsList}
       </div>
       {requestSended ? <Loader /> : ''}

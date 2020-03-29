@@ -51,6 +51,24 @@ function MyWallets({ history }) {
         justifyContent: 'center',
       },
     },
+    info: {
+      display: 'block',
+      width: '100%',
+      textAlign: 'center',
+      color: 'rgba(0, 0, 0, 0.87)',
+      fontSize: '25px',
+      fontFamily: '"Roboto Condensed", sans-serif',
+      fontWeight: '700',
+      lineHeight: '1',
+      textTransform: 'uppercase',
+    },
+    infoSpan: {
+      width: '73px',
+      height: '4px',
+      margin: '8px auto 0',
+      display: 'block',
+      backgroundColor: '#3f51b5',
+    },
   });
   const classes = useStyles();
 
@@ -86,17 +104,40 @@ function MyWallets({ history }) {
 
   let MyWalletsList;
   if (myWallets !== undefined) {
-    MyWalletsList = myWallets.map((item) => {
-      const startDate = item.startDate.split('T')[0];
-      const endDate = item.endDate.split('T')[0];
-      if (item.isFavourite === true) {
+    if (myWallets.length === 0) {
+      MyWalletsList = (
+        <div className={classes.info}>
+          Brak utworzonych portfeli
+          <span className={classes.infoSpan} />
+        </div>
+      );
+    } else {
+      MyWalletsList = myWallets.map((item) => {
+        const startDate = item.startDate.split('T')[0];
+        const endDate = item.endDate.split('T')[0];
+        if (item.isFavourite === true) {
+          return (
+            <Card
+              open={() => onWalletOpen(item.walletId, item.walletName)}
+              onRemove={() => WalletRemove(item.walletId)}
+              favouritesToggle={() => onRemoveFromFavourites(item.walletId)}
+              favouritesButtonText="Usuń z ulubionych"
+              isFavourite="true"
+              key={item.walletId}
+              walletKey={item.walletId}
+              name={item.walletName}
+              endDate={endDate}
+              startDate={startDate}
+            />
+          );
+        }
         return (
           <Card
             open={() => onWalletOpen(item.walletId, item.walletName)}
-            onRemove={() => WalletRemove(item.key)}
-            favouritesToggle={() => onRemoveFromFavourites(item.walletId)}
-            favouritesButtonText="Usuń z ulubionych"
-            isFavourite="true"
+            onRemove={() => WalletRemove(item.walletId)}
+            favouritesToggle={() => onAddToFavourites(item.walletId)}
+            favouritesButtonText="Dodaj do ulubionych"
+            isFavourite="false"
             key={item.walletId}
             walletKey={item.walletId}
             name={item.walletName}
@@ -104,22 +145,8 @@ function MyWallets({ history }) {
             startDate={startDate}
           />
         );
-      }
-      return (
-        <Card
-          open={() => onWalletOpen(item.walletId, item.walletName)}
-          onRemove={() => WalletRemove(item.walletId)}
-          favouritesToggle={() => onAddToFavourites(item.walletId)}
-          favouritesButtonText="Dodaj do ulubionych"
-          isFavourite="false"
-          key={item.walletId}
-          walletKey={item.walletId}
-          name={item.walletName}
-          endDate={endDate}
-          startDate={startDate}
-        />
-      );
-    });
+      });
+    }
   }
 
   return (
