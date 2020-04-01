@@ -7,8 +7,6 @@ https://virtual-wallet-12a21.firebaseapp.com/
 ## How to use
 
 npm install<br>
-npm install react-react<br>
-npm install --save react-redux<br>
 npm start<br>
 
 ## Available Scripts
