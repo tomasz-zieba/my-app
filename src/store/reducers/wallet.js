@@ -13,7 +13,6 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SET_WALLET_DATA:
-      console.log(action);
       return {
         ...state,
         incomes: action.incomes.reverse(),

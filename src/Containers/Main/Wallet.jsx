@@ -260,7 +260,7 @@ function Wallet({ history, location, match }) {
         )}
       />
       <LatestOperations operations={latestIncomes} label="Ostatnie wpłaty" operationstype="incomes" onClick={seeAllOperationsHandler} buttonmore={incomes.length > 5 ? 'true' : 'false'} />
-      <LatestOperations operations={latestExpense} label="Ostatnie wypłaty" operationstype="expenses" onClick={seeAllOperationsHandler} buttonmore={expenses.length > 5 ? 'true' : 'false'} />
+      <LatestOperations operations={latestExpense} label="Ostatnie transakcje" operationstype="expenses" onClick={seeAllOperationsHandler} buttonmore={expenses.length > 5 ? 'true' : 'false'} />
       <Summary summarydata={summary} title="Staystyki wydatków" />
       {requestSended ? <Loader /> : ''}
       <InfoDialog open={infoDialogOpen} text={errorInfo} handleClose={InfoELementClose} />

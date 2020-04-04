@@ -38,36 +38,33 @@ export const setWalletData = (walletData) => {
   };
 };
 
-export const onSendWalletRequest = (walletId) => (dispatch) => {
+export const onSendWalletRequest = (walletId) => async (dispatch) => {
   dispatch(action.onRequestSended());
-
   const token = localStorage.getItem('token');
-  fetch(`https://virtual-wallet-tz.herokuapp.com/wallet/${walletId}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((res) => {
-      dispatch(action.onGetResponse());
-      if (res.status === 404) {
-        throw new Error('Could not find wallet.');
-      }
-      if (res.status === 403) {
-        throw new Error('Not authorized.');
-      }
-      if (res.status !== 200) {
-        throw new Error('Failed to fetch wallet data.');
-      }
-      return res.json();
-    })
-    .then((resData) => {
-      dispatch(setWalletData(resData));
-    })
-    .catch((error) => {
-      dispatch(action.onInfoDialogOpen(error.message));
+  try {
+    const res = await fetch(`https://virtual-wallet-tz.herokuapp.com/wallet/${walletId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
+    if (res.status === 404) {
+      throw new Error('Could not find wallet.');
+    }
+    if (res.status === 403) {
+      throw new Error('Not authorized.');
+    }
+    if (res.status !== 200) {
+      throw new Error('Failed to fetch wallet data.');
+    }
+    dispatch(action.onGetResponse());
+    const resData = await res.json();
+    dispatch(setWalletData(resData));
+  } catch (err) {
+    dispatch(action.onGetResponse());
+    dispatch(action.onInfoDialogOpen(err.message));
+  }
 };
 
 export const onExpenseUpdate = (response) => {
@@ -86,7 +83,7 @@ export const onExpenseUpdate = (response) => {
   };
 };
 
-export const onSaveExpense = (data) => (dispatch) => {
+export const onSaveExpense = (data) => async (dispatch) => {
   dispatch(action.onRequestSended());
 
   const token = localStorage.getItem('token');
@@ -96,35 +93,33 @@ export const onSaveExpense = (data) => (dispatch) => {
   const { date } = data;
   const { info } = data;
   const value = parseFloat(data.value);
-  fetch('https://virtual-wallet-tz.herokuapp.com/wallet-expense', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      walletId,
-      user: userId,
-      category,
-      date,
-      info,
-      value,
-    }),
-  })
-    .then((res) => {
-      dispatch(action.onGetResponse());
-      if (res.status !== 200 && res.status !== 201) {
-        throw new Error('Adding new expense failed!');
-      }
-      return res.json();
-    })
-    .then((resData) => {
-      dispatch(onExpenseUpdate(resData));
-      dispatch(action.onInfoELementOpen('success', 'Zasilenie konta zapisane pomyślnie.'));
-    })
-    .catch(() => {
-      dispatch(action.onInfoELementOpen('error', 'Błąd połączenia. Zasilenie konta nie zostało zapisane.'));
+  try {
+    const res = await fetch('https://virtual-wallet-tz.herokuapp.com/wallet-expense', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        walletId,
+        user: userId,
+        category,
+        date,
+        info,
+        value,
+      }),
     });
+    if (res.status !== 200 && res.status !== 201) {
+      throw new Error('Adding new expense failed!');
+    }
+    dispatch(action.onGetResponse());
+    const resData = await res.json();
+    dispatch(onExpenseUpdate(resData));
+    dispatch(action.onInfoELementOpen('success', 'Zasilenie konta zapisane pomyślnie.'));
+  } catch (err) {
+    dispatch(action.onGetResponse());
+    dispatch(action.onInfoELementOpen('error', 'Błąd połączenia. Zasilenie konta nie zostało zapisane.'));
+  }
 };
 
 export const onIncomeUpdate = (response) => {
@@ -142,9 +137,8 @@ export const onIncomeUpdate = (response) => {
   };
 };
 
-export const onSaveIncome = (data) => (dispatch) => {
+export const onSaveIncome = (data) => async (dispatch) => {
   dispatch(action.onRequestSended());
-
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('userId');
   const walletId = data.key;
@@ -152,33 +146,32 @@ export const onSaveIncome = (data) => (dispatch) => {
   const { date } = data;
   const { info } = data;
   const value = parseFloat(data.value);
-  fetch('https://virtual-wallet-tz.herokuapp.com/wallet-income', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      walletId,
-      user: userId,
-      category,
-      date,
-      info,
-      value,
-    }),
-  })
-    .then((res) => {
-      dispatch(action.onGetResponse());
-      if (res.status !== 200 && res.status !== 201) {
-        throw new Error('Adding new income failed!');
-      }
-      return res.json();
-    })
-    .then((resData) => {
-      dispatch(onIncomeUpdate(resData));
-      dispatch(action.onInfoELementOpen('success', 'Zasilenie konta zapisane pomyślnie.'));
-    })
-    .catch(() => {
-      dispatch(action.onInfoELementOpen('error', 'Błąd połączenia. Zasilenie konta nie zostało zapisane.'));
+  try {
+    const res = await fetch('https://virtual-wallet-tz.herokuapp.com/wallet-income', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        walletId,
+        user: userId,
+        category,
+        date,
+        info,
+        value,
+      }),
     });
+
+    if (res.status !== 200 && res.status !== 201) {
+      throw new Error('Adding new income failed!');
+    }
+    dispatch(action.onGetResponse());
+    const resData = await res.json();
+    dispatch(onIncomeUpdate(resData));
+    dispatch(action.onInfoELementOpen('success', 'Zasilenie konta zapisane pomyślnie.'));
+  } catch (err) {
+    dispatch(action.onGetResponse());
+    dispatch(action.onInfoELementOpen('error', 'Błąd połączenia. Zasilenie konta nie zostało zapisane.'));
+  }
 };

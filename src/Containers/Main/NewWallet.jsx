@@ -20,6 +20,7 @@ function WelcomPage() {
 
   const dispatch = useDispatch();
   const onInfoELementClose = (event, reason) => dispatch(actions.onInfoELementClose(event, reason));
+  const onInfoELementOpen = (event, reason) => dispatch(actions.onInfoELementOpen(event, reason));
   const onFetchNewWallet = (walletData) => dispatch(actions.onFetchNewWallet(walletData));
 
   const infoElementOpen = useSelector((state) => state.settings.infoElementOpen);
@@ -38,17 +39,21 @@ function WelcomPage() {
     setWalletName(event.target.value);
   }
   function sendAction() {
-    const walletData = {
-      walletName,
-      startDate,
-      endDate,
-    };
-    onFetchNewWallet(walletData);
+    if (walletName === '') {
+      onInfoELementOpen('error', 'Uzupełnij nazwę porfela.');
+    } else {
+      const walletData = {
+        walletName,
+        startDate,
+        endDate,
+      };
+      onFetchNewWallet(walletData);
+    }
   }
 
   return (
     <>
-      <StandardTextField label="Nazwa" changed={(event) => inputChangeHandler(event)} value={walletName} />
+      <StandardTextField type="text" label="Nazwa" changed={(event) => inputChangeHandler(event)} value={walletName} />
       <DatePicker label="Od:" date={startDate} onDateChange={handleStartDateChange} />
       <DatePicker label="Do:" date={endDate} onDateChange={handleEndDateChange} />
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>

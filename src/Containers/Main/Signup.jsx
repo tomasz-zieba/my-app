@@ -52,7 +52,7 @@ function Main() {
           })}
           style={{ width: '251px', margin: '20px' }}
         >
-          <StandardTextField label="Imię (min. 5 znaków)" changed={(event) => setSigninUserName(event.target.value)} value={signinUserName} />
+          <StandardTextField label="Imię (min. 5 znaków)" type="text" changed={(event) => setSigninUserName(event.target.value)} value={signinUserName} />
           <StandardTextField label="Hasło (min. 5 znaków)" type="password" changed={(event) => setSigninUserPassword(event.target.value)} value={signinUserPassword} />
           <StandardTextField label="Potwierdź hasło" type="password" changed={(event) => setSigninUserPasswordConfirmed(event.target.value)} value={signinUserPasswordConfirmed} />
           <Button

@@ -155,6 +155,7 @@ function Settings() {
             <div style={{ maxWidth: '250px' }}>
               <div>
                 <StandardTextField
+                  type="text"
                   label="Dodaj kategorię wpływów"
                   value={incomeCategoryAdd}
                   changed={(event) => incomeInputChangeHandler(event)}
@@ -172,6 +173,7 @@ function Settings() {
               </div>
               <div>
                 <StandardTextField
+                  type="text"
                   label="Dodaj kategorię wydatków"
                   value={expenseCategoryAdd}
                   changed={(event) => expenseInputChangeHandler(event)}
@@ -245,6 +247,7 @@ function Settings() {
                 <StandardTextField
                   style={{ width: '300px' }}
                   label="Dodaj kategorię wpływów"
+                  type="text"
                   value={incomeCategoryAdd}
                   changed={(event) => incomeInputChangeHandler(event)}
                 />
@@ -269,6 +272,7 @@ function Settings() {
                 <StandardTextField
                   style={{ width: '300px' }}
                   label="Dodaj kategorię wydatków"
+                  type="text"
                   value={expenseCategoryAdd}
                   changed={(event) => expenseInputChangeHandler(event)}
                 />
